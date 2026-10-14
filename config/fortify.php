@@ -161,8 +161,10 @@ return [
     |
     */
 
-    // Solo login/logout por ahora. Sin registro público (nunca); recuperar contraseña y
-    // verificación de correo llegan en el resto de la Fase 1. 2FA y passkeys necesitarían columnas nuevas.
-    'features' => [],
+    // Sin registro público (nunca). 2FA y passkeys necesitarían columnas nuevas en el esquema.
+    'features' => [
+        Features::resetPasswords(),
+        Features::emailVerification(),
+    ],
 
 ];

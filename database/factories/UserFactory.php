@@ -33,6 +33,11 @@ class UserFactory extends Factory
         return $this->state(fn () => ['role_id' => Role::where('slug', $slug)->value('id')]);
     }
 
+    public function unverified(): static
+    {
+        return $this->state(fn () => ['email_verified_at' => null]);
+    }
+
     public function inactive(): static
     {
         return $this->state(fn () => ['is_active' => false]);

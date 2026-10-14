@@ -1,9 +1,23 @@
+@props(['title' => 'Cursos el Mai', 'breadcrumbs' => []])
+
+@php
+    $user = auth()->user();
+    $nav = [];
+    if ($user?->hasVerifiedEmail()) {
+        $nav[] = ['Inicio', $user->role->slug.'.home'];
+        if ($user->hasRole('super_admin')) {
+            $nav[] = ['Monitoreo', 'director.home'];
+        }
+        $nav[] = ['Mi perfil', 'profile.edit'];
+    }
+@endphp
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Cursos el Mai' }}</title>
+    <title>{{ $title }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-canvas font-sans text-ink antialiased">
@@ -11,10 +25,11 @@
 
     @auth
         <header class="border-b border-line bg-surface">
-            <div class="mx-auto flex max-w-[1120px] items-center justify-between gap-4 px-4 py-3">
+            <div class="flex items-center justify-between gap-4 px-4 py-3">
                 <a href="{{ route('dashboard') }}" class="font-serif text-xl font-semibold">Cursos el Mai</a>
-                <div class="flex items-center gap-4">
-                    <span class="hidden text-muted sm:inline">{{ auth()->user()->name }}</span>
+                <div class="flex items-center gap-3">
+                    <span class="hidden text-muted sm:inline">{{ $user->name }}</span>
+                    <span class="rounded-full bg-primary-soft px-3 py-0.5 text-sm font-semibold text-primary">{{ $user->role->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="min-h-11 rounded-field border border-line-strong px-4 hover:bg-sunken">Cerrar sesión</button>
@@ -24,8 +39,42 @@
         </header>
     @endauth
 
-    <main id="contenido" class="mx-auto max-w-[1120px] px-4 py-8">
-        {{ $slot }}
-    </main>
+    <div class="lg:flex">
+        @if ($nav)
+            <nav aria-label="Principal" class="border-b border-line bg-surface lg:min-h-[calc(100vh-4.5rem)] lg:w-56 lg:shrink-0 lg:border-b-0 lg:border-r">
+                <ul class="flex gap-1 overflow-x-auto px-2 py-2 lg:flex-col">
+                    @foreach ($nav as [$label, $route])
+                        @php $active = request()->routeIs($route); @endphp
+                        <li>
+                            <a href="{{ route($route) }}" @if ($active) aria-current="page" @endif
+                               class="flex min-h-11 items-center whitespace-nowrap rounded-field px-3 {{ $active ? 'bg-primary-soft font-semibold text-primary' : 'hover:bg-sunken' }}">
+                                {{ $label }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </nav>
+        @endif
+
+        <main id="contenido" class="mx-auto w-full max-w-[1120px] px-4 py-8">
+            @if ($breadcrumbs)
+                <nav aria-label="Migas de pan" class="mb-4 text-sm text-muted">
+                    <ol class="flex flex-wrap gap-2">
+                        @foreach ($breadcrumbs as $label => $url)
+                            <li>@if ($url)<a href="{{ $url }}" class="underline">{{ $label }}</a> <span aria-hidden="true">/</span>@else<span aria-current="page">{{ $label }}</span>@endif</li>
+                        @endforeach
+                    </ol>
+                </nav>
+            @endif
+
+            @if (session('status') && session('status') !== 'verification-link-sent')
+                <div role="status" class="mb-6 rounded-field border border-line bg-surface px-4 py-3">
+                    <span aria-hidden="true">✓</span> {{ session('status') }}
+                </div>
+            @endif
+
+            {{ $slot }}
+        </main>
+    </div>
 </body>
 </html>

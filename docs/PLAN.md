@@ -76,10 +76,10 @@ Cada fase termina con la app funcionando, sin código a medias. Al inicio de cad
 - **Hecho cuando:** `php artisan serve` abre la página de inicio y una consulta a la tabla `roles` devuelve 4 filas.
 
 ### Fase 1 — Acceso y roles
-- [ ] Fortify: login, logout, recuperar contraseña, verificación de correo; registro público desactivado; cuentas con `is_active = 0` no entran.
-- [ ] Middleware de rol, Policies base, layout con navegación según rol, inicio vacío por rol.
-- [ ] Perfil: ver y editar el propio (ver tabla de permisos); subida de foto segura.
-- [ ] Página pública mínima con botón de acceso.
+- [x] Fortify: login, logout, recuperar contraseña, verificación de correo; registro público desactivado; cuentas con `is_active = 0` no entran.
+- [x] Middleware de rol, layout con navegación según rol, inicio vacío por rol. *(Las Policies se crean en la Fase 2 con los cursos: aún no hay recursos con dueño.)*
+- [x] Perfil: ver y editar el propio (ver tabla de permisos); subida de foto segura.
+- [x] Página pública mínima con botón de acceso.
 - **Hecho cuando:** los 4 roles inician sesión y cada uno solo ve lo suyo; pruebas de permisos en verde.
 
 ### Fase 2 — Cursos y contenido
