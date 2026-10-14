@@ -1,0 +1,61 @@
+@import '@fontsource/source-sans-3/400.css';
+@import '@fontsource/source-sans-3/600.css';
+@import '@fontsource/source-serif-4/600.css';
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/* Tokens de docs/DESIGN.md, sección 2 */
+:root {
+    --canvas: #F6F7F9;   --surface: #FFFFFF;   --surface-sunken: #EEF1F5;
+    --border: #E2E6EC;   --border-strong: #64748B;
+    --ink: #0F172A;      --ink-muted: #475569;
+    --primary: #1F3A8A;  --primary-hover: #1E40AF;  --primary-soft: #E8EDFB;
+    --accent: #F59E0B;   --accent-ink: #92400E;
+    --success: #15803D;  --success-ink: #166534;  --success-soft: #E7F5EC;
+    --warning: #B45309;  --warning-soft: #FDF1DC;  --warning-ink: #92400E;
+    --danger:  #B91C1C;  --danger-soft:  #FBEAEA;
+    --info:    #0369A1;
+    --focus: #1F3A8A;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --canvas: #0B1220;   --surface: #111A2E;   --surface-sunken: #0E1626;
+        --border: #22304A;   --border-strong: #6B7A99;
+        --ink: #E6EAF2;      --ink-muted: #9AA7BD;
+        --primary: #7FA8FF;  --primary-hover: #A3C0FF;  --primary-soft: #1B2A4D;
+        --accent: #FBBF24;   --accent-ink: #FBBF24;
+        --success: #4ADE80;  --danger: #F87171;  --focus: #7FA8FF;
+    }
+}
+
+@theme inline {
+    --color-canvas: var(--canvas);
+    --color-surface: var(--surface);
+    --color-sunken: var(--surface-sunken);
+    --color-line: var(--border);
+    --color-line-strong: var(--border-strong);
+    --color-ink: var(--ink);
+    --color-muted: var(--ink-muted);
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-primary-soft: var(--primary-soft);
+    --color-danger: var(--danger);
+
+    --font-sans: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Source Serif 4', ui-serif, Georgia, serif;
+
+    --radius-field: 6px;
+    --radius-card: 10px;
+}
+
+:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

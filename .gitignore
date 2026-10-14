@@ -1,0 +1,159 @@
+# =====================================================================
+#  Secretos y configuración sensible — NUNCA deben versionarse
+# =====================================================================
+
+# Variables de entorno (solo se versiona la plantilla .env.example)
+.env
+.env.*
+*.env
+!.env.example
+
+# Llaves, certificados y keystores
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.truststore
+*.crt
+*.cer
+*.der
+*.csr
+*.asc
+*.gpg
+id_rsa*
+id_ed25519*
+id_ecdsa*
+*.ppk
+
+# Credenciales de servicios en la nube / terceros
+credentials*.json
+service-account*.json
+*-service-account.json
+gcloud*.json
+firebase-adminsdk*.json
+google-services.json
+GoogleService-Info.plist
+.aws/
+.azure/
+.gcloud/
+.netrc
+.npmrc
+.pypirc
+.docker/config.json
+*.tfvars
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Archivos de configuración local con secretos
+secrets/
+.secrets/
+secrets.*
+*.secret
+*.secrets
+config/local.*
+config/*.local.*
+application-local.*
+application-secret*.*
+appsettings.*.local.json
+docker-compose.override.yml
+.htpasswd
+
+# =====================================================================
+#  Datos de usuarios / plataforma (alumnos, pagos, contenido subido)
+# =====================================================================
+
+# Bases de datos locales y respaldos
+# (el esquema vive solo en esta máquina; los .sql no se suben)
+database/*.sql
+database/changes/
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.sql.gz
+*.dump
+*.bak
+dumps/
+backups/
+db-data/
+pgdata/
+mysql-data/
+
+# Contenido subido por usuarios y material privado de cursos
+# (storage/ de Laravel trae sus propios .gitignore internos; aquí solo se blinda lo subido)
+uploads/
+storage/app/*
+!storage/app/.gitignore
+storage/*.key
+public/storage
+media/
+private/
+user-data/
+exports/
+*.csv
+*.xlsx
+
+# Logs (pueden contener tokens, correos, IPs)
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =====================================================================
+#  Dependencias y artefactos de build
+# =====================================================================
+vendor/
+public/build/
+public/hot
+public/fonts-manifest.dev.json
+storage/pail
+_ide_helper.php
+.phpactor.json
+bootstrap/cache/*.php
+.phpunit.result.cache
+.phpunit.cache/
+auth.json
+node_modules/
+.pnp.*
+dist/
+build/
+out/
+target/
+.next/
+.nuxt/
+.output/
+.vercel/
+.netlify/
+coverage/
+.cache/
+.turbo/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.gradle/
+*.class
+
+# =====================================================================
+#  Editores / SO
+# =====================================================================
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.swp
+
+# Configuración local de Claude Code (la compartida sí se versiona)
+.claude/settings.local.json
+
+# Las skills son código auditado y versionado: sus datos de referencia no son datos de usuarios
+!.claude/skills/**/*.csv
