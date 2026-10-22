@@ -14,7 +14,7 @@ class CoursePolicy
             return true;
         }
 
-        return $user->hasRole('alumno') && $course->status === 'published' && $course->hasActiveStudent($user);
+        return $user->hasRole('alumno') && $course->status === 'published' && $course->hasReader($user);
     }
 
     public function create(User $user): bool

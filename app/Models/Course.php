@@ -49,8 +49,9 @@ class Course extends Model
         return $this->hasMany(Enrollment::class);
     }
 
-    public function hasActiveStudent(User $user): bool
+    /** Alumno que puede leer el curso: inscripción 'active' o 'completed' ('removed' no). */
+    public function hasReader(User $user): bool
     {
-        return $this->enrollments()->where('user_id', $user->id)->where('status', 'active')->exists();
+        return $this->enrollments()->where('user_id', $user->id)->whereIn('status', ['active', 'completed'])->exists();
     }
 }

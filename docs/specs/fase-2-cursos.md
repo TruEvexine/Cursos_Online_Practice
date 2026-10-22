@@ -18,7 +18,7 @@ Rama `feature/fase-2-cursos` (sale de `fase-0-1`). El esquema actual ya cubre la
     - Otro rol → se rechaza.
     - Correo nuevo → se crea una cuenta de alumno y se envía el enlace de recuperación de Fortify como "fija tu contraseña". El correo explica que, si el enlace caducó (60 min), se pide otro en "¿Olvidaste tu contraseña?". Al fijar la contraseña, el correo queda verificado.
     - Quitar → `status='removed'` y `removed_at`, con registro en `audit_logs`.
-- **Alumno:** "Mis cursos" (cursos publicados con inscripción activa), vista del curso (bloques, temas y materiales) y lectura del tema (72ch).
+- **Alumno:** "Mis cursos" (cursos publicados con inscripción `active` o `completed`), vista del curso (bloques, temas y materiales) y lectura del tema (72ch).
 - **Director:** ve cualquier curso en solo lectura.
 
 ## Qué no entra
@@ -29,7 +29,7 @@ Bloqueos y progreso de misiones, tareas, exámenes, avisos, portada del curso, r
 
 | Habilidad | Quién |
 |---|---|
-| `view` | super admin, director, el ponente dueño, alumno con inscripción `active` en un curso `published` |
+| `view` | super admin, director, el ponente dueño, alumno con inscripción `active` o `completed` en un curso `published` (`removed` → 403) |
 | `create` | ponente, super admin |
 | `update`, `delete`, `manageStudents` | el ponente dueño, super admin |
 
@@ -41,7 +41,7 @@ Bloqueos y progreso de misiones, tareas, exámenes, avisos, portada del curso, r
 ## Pruebas
 
 - 403 para: otro ponente que edita un curso ajeno, alumno que crea un curso, director que edita.
-- Alumno inscrito lee el curso, el tema y descarga materiales; alumno no inscrito, quitado o en un curso en borrador recibe 403.
+- Alumno inscrito (`active` o `completed`) lee el curso, el tema y descarga materiales; alumno no inscrito, quitado o en un curso en borrador recibe 403.
 - El Markdown quita `<script>` y los enlaces `javascript:`. Se rechazan subidas svg, html y zip; la ruta guardada es aleatoria y privada.
 - Inscripción: alumno existente, correo nuevo (cuenta, aviso con texto de caducidad y verificación al fijar la contraseña), otro rol, reinscripción; quitar deja registro en la bitácora.
 - No se borra un curso con inscripciones activas.

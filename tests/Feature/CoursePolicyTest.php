@@ -53,12 +53,13 @@ class CoursePolicyTest extends TestCase
         $this->assertFalse(Gate::forUser($course->ponente->fresh())->allows('update', $course));
     }
 
-    public function test_student_views_only_published_courses_with_active_enrollment(): void
+    public function test_student_views_only_published_courses_with_active_or_completed_enrollment(): void
     {
         $student = User::factory()->create();
 
         $cases = [
             'inscrito activo' => [Course::factory()->enroll($student)->create(), true],
+            'completado' => [Course::factory()->enroll($student, 'completed')->create(), true],
             'quitado' => [Course::factory()->enroll($student, 'removed')->create(), false],
             'no inscrito' => [Course::factory()->create(), false],
             'borrador' => [Course::factory()->draft()->enroll($student)->create(), false],
