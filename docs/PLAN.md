@@ -129,6 +129,7 @@ ni `npx`, ni el kit `stack/` de UI UX Pro Max.
 | planning-and-task-breakdown | (mismo repo y commit) | `skills/planning-and-task-breakdown/` | Dividir cada fase en tareas. |
 | ui-ux-pro-max | `nextlevelbuilder/ui-ux-pro-max-skill` @ `7246805992a42b7bba37d4cac83b01416f0c6c44` | `.claude/skills/ui-ux-pro-max/` (requiere Python 3) | Pantallas, tablas, gráficas, formularios. |
 | design-motion-principles | `kylezantos/design-motion-principles` @ `4a9ca879f24a361f4dca4174fe2da0f67b5ddee3` | `skills/design-motion-principles/` | Mapa de misiones, transiciones, auditoría de movimiento. |
+| impeccable | `pbakaus/impeccable` @ `69c34b7c3d6267dfd783dacb9f58f04522656b2b` | `.claude/skills/impeccable/` (sin ejecutar `scripts/`: descarga un binario) | Apoyo en auditorías de pantallas de la app (agregada el 2026-10-22). |
 | taste-skill *(opcional)* | `Leonxlnx/taste-skill` @ `a60a36dc2bb3bb77ccf17f2f62041f5ca8a458b9` | `skills/taste-skill/` | Solo la página pública; no sirve para pantallas de la app. Necesita Node 22+ y Chrome. |
 
 No se instalan: **Graphify** (hooks de git y de Claude Code, y archivos grandes; reconsiderar si el repo pasa de ~150 archivos) y **awesome-claude-design**

@@ -57,7 +57,7 @@ Usar el ejecutor de pruebas que traiga el esqueleto de Laravel 13; revisa `compo
 ## Skills (en `.claude/skills/`, fijadas en `docs/PLAN.md`, sección 7)
 
 `ponytail` (siempre) · `security-and-hardening` (auth, subidas, chat, permisos, revisión final) · `spec-driven-development` y `planning-and-task-breakdown` (inicio de fase) ·
-`ui-ux-pro-max` y `design-motion-principles` (interfaz y movimiento; si chocan con `docs/DESIGN.md`, gana `docs/DESIGN.md`) · `taste-skill` solo para la página pública.
+`ui-ux-pro-max`, `design-motion-principles` e `impeccable` (interfaz y movimiento; si chocan con `docs/DESIGN.md`, gana `docs/DESIGN.md`; de `impeccable` no se ejecuta `scripts/`) · `taste-skill` solo para la página pública.
 No instales otras skills ni ejecutes scripts de instalación de los repos de skills.
 
 ## Diseño (resumen; detalle en `docs/DESIGN.md`)

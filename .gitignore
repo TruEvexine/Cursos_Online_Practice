@@ -157,3 +157,6 @@ Thumbs.db
 
 # Las skills son código auditado y versionado: sus datos de referencia no son datos de usuarios
 !.claude/skills/**/*.csv
+
+# Notas locales de ejecución
+RUN.txt
