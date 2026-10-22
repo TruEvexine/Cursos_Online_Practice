@@ -28,6 +28,10 @@
         --primary: #7FA8FF;  --primary-hover: #A3C0FF;  --primary-soft: #1B2A4D;
         --accent: #FBBF24;   --accent-ink: #FBBF24;
         --success: #4ADE80;  --danger: #F87171;  --focus: #7FA8FF;
+        /* Fondos de insignias: DESIGN.md no los define en oscuro; tonos apagados para no deslumbrar. */
+        --success-soft: #12301F;  --success-ink: #4ADE80;
+        --warning-soft: #33240C;  --warning-ink: #FBBF24;
+        --danger-soft: #3A1518;
     }
 }
 
@@ -43,6 +47,11 @@
     --color-primary-hover: var(--primary-hover);
     --color-primary-soft: var(--primary-soft);
     --color-danger: var(--danger);
+    --color-danger-soft: var(--danger-soft);
+    --color-success-ink: var(--success-ink);
+    --color-success-soft: var(--success-soft);
+    --color-warning-ink: var(--warning-ink);
+    --color-warning-soft: var(--warning-soft);
 
     --font-sans: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
     --font-serif: 'Source Serif 4', ui-serif, Georgia, serif;
@@ -57,5 +66,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    *, *::before, *::after {
+        transition-duration: 0.01ms !important; animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important; scroll-behavior: auto !important;
+    }
 }

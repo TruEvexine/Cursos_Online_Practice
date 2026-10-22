@@ -8,6 +8,12 @@ use App\Models\User;
 /** Bloques, temas y materiales se autorizan con la Policy de su curso. Tabla de permisos: docs/PLAN.md, sección 3. */
 class CoursePolicy
 {
+    /** Lista de cursos: el ponente ve los suyos; super admin y director, todos. */
+    public function viewAny(User $user): bool
+    {
+        return $user->hasRole('ponente', 'super_admin', 'director');
+    }
+
     public function view(User $user, Course $course): bool
     {
         if ($user->hasRole('super_admin', 'director') || $this->owns($user, $course)) {

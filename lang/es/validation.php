@@ -18,6 +18,10 @@ return [
     'dimensions' => 'La imagen :attribute es demasiado grande (máximo 3000 × 3000 px).',
     'regex' => 'El formato de :attribute no es válido.',
     'url' => 'El campo :attribute debe ser un enlace válido que empiece con https://.',
+    'in' => 'Elige un valor válido para :attribute.',
+    'exists' => 'Elige un valor válido para :attribute.',
+    'date' => 'El campo :attribute debe ser una fecha válida.',
+    'after_or_equal' => 'La :attribute debe ser igual o posterior a la fecha de inicio.',
 
     'attributes' => [
         'name' => 'nombre',
@@ -29,5 +33,12 @@ return [
         'accent_color' => 'color de acento',
         'headline' => 'título',
         'website_url' => 'sitio web',
+        'title' => 'título',
+        'summary' => 'resumen',
+        'description' => 'descripción',
+        'status' => 'estado',
+        'starts_on' => 'fecha de inicio',
+        'ends_on' => 'fecha de fin',
+        'ponente_id' => 'ponente',
     ],
 ];

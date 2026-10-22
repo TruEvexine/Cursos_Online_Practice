@@ -8,6 +8,9 @@
         if ($user->hasRole('super_admin')) {
             $nav[] = ['Monitoreo', 'director.home'];
         }
+        if ($user->can('viewAny', App\Models\Course::class)) {
+            $nav[] = [$user->hasRole('ponente') ? 'Mis cursos' : 'Cursos', 'courses.index'];
+        }
         $nav[] = ['Mi perfil', 'profile.edit'];
     }
 @endphp
@@ -26,13 +29,14 @@
     @auth
         <header class="border-b border-line bg-surface">
             <div class="flex items-center justify-between gap-4 px-4 py-3">
-                <a href="{{ route('dashboard') }}" class="font-serif text-xl font-semibold">Cursos el Mai</a>
+                <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 items-center whitespace-nowrap font-serif text-xl font-semibold">Cursos el Mai</a>
                 <div class="flex items-center gap-3">
                     <span class="hidden text-muted sm:inline">{{ $user->name }}</span>
-                    <span class="rounded-full bg-primary-soft px-3 py-0.5 text-sm font-semibold text-primary">{{ $user->role->name }}</span>
+                    {{-- En móvil no cabe junto al botón; el rol también se ve en la página de inicio. --}}
+                    <span class="hidden whitespace-nowrap rounded-full bg-primary-soft px-3 py-0.5 text-sm font-semibold text-primary sm:inline-block">{{ $user->role->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="min-h-11 rounded-field border border-line-strong px-4 hover:bg-sunken">Cerrar sesión</button>
+                        <button type="submit" class="min-h-11 whitespace-nowrap rounded-field border border-line-strong px-4 hover:bg-sunken">Cerrar sesión</button>
                     </form>
                 </div>
             </div>
@@ -44,7 +48,7 @@
             <nav aria-label="Principal" class="border-b border-line bg-surface lg:min-h-[calc(100vh-4.5rem)] lg:w-56 lg:shrink-0 lg:border-b-0 lg:border-r">
                 <ul class="flex gap-1 overflow-x-auto px-2 py-2 lg:flex-col">
                     @foreach ($nav as [$label, $route])
-                        @php $active = request()->routeIs($route); @endphp
+                        @php $active = request()->routeIs(Str::beforeLast($route, '.').'.*'); @endphp
                         <li>
                             <a href="{{ route($route) }}" @if ($active) aria-current="page" @endif
                                class="flex min-h-11 items-center whitespace-nowrap rounded-field px-3 {{ $active ? 'bg-primary-soft font-semibold text-primary' : 'hover:bg-sunken' }}">
@@ -59,9 +63,9 @@
         <main id="contenido" class="mx-auto w-full max-w-[1120px] px-4 py-8">
             @if ($breadcrumbs)
                 <nav aria-label="Migas de pan" class="mb-4 text-sm text-muted">
-                    <ol class="flex flex-wrap gap-2">
+                    <ol class="flex flex-wrap items-center gap-x-2">
                         @foreach ($breadcrumbs as $label => $url)
-                            <li>@if ($url)<a href="{{ $url }}" class="underline">{{ $label }}</a> <span aria-hidden="true">/</span>@else<span aria-current="page">{{ $label }}</span>@endif</li>
+                            <li>@if ($url)<a href="{{ $url }}" class="inline-flex min-h-11 items-center underline">{{ $label }}</a> <span aria-hidden="true">/</span>@else<span aria-current="page">{{ $label }}</span>@endif</li>
                         @endforeach
                     </ol>
                 </nav>
