@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Markdown\HttpsOnlyExtension;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,7 +18,7 @@ class Topic extends Model
         return ['is_required' => 'boolean'];
     }
 
-    /** Markdown sin HTML crudo ni enlaces inseguros; los externos se abren con rel="noopener noreferrer". */
+    /** Markdown sin HTML crudo; solo enlaces e imágenes https://; los externos se abren con rel="noopener noreferrer". */
     public function contentHtml(): string
     {
         return Str::markdown($this->content ?? '', [
@@ -29,7 +30,7 @@ class Topic extends Model
                 'noopener' => 'external',
                 'noreferrer' => 'external',
             ],
-        ], [new ExternalLinkExtension]);
+        ], [new HttpsOnlyExtension, new ExternalLinkExtension]);
     }
 
     public function block(): BelongsTo

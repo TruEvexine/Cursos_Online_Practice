@@ -170,8 +170,26 @@ class BlockTopicTest extends TestCase
         foreach (['<script', 'onerror', 'onclick', '<img', 'href="javascript', 'href="data', 'href="vbscript', 'alert(1)'] as $forbidden) {
             $this->assertStringNotContainsStringIgnoringCase($forbidden, $html, $forbidden);
         }
-        // Los enlaces inseguros quedan como <a> sin href (texto inerte); el único href es el https.
+        // Los enlaces inseguros quedan como texto inerte; el único href es el https.
         $this->assertSame(1, substr_count($html, 'href='));
         $this->assertStringContainsString('<a rel="noopener noreferrer" target="_blank" href="https://ejemplo.com/a">', $html);
+    }
+
+    public function test_markdown_turns_http_links_into_text_and_blocks_data_images(): void
+    {
+        $html = (new Topic(['content' => implode("\n\n", [
+            '[inseguro](http://ejemplo.com/a) <http://ejemplo.com/b> www.ejemplo.com',
+            '![pixel](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==)',
+            '![http](http://ejemplo.com/foto.png)',
+            '[seguro](HTTPS://ejemplo.com/c)',
+        ])]))->contentHtml();
+
+        $this->assertStringNotContainsString('href="http:', $html);
+        $this->assertStringNotContainsString('data:', $html);
+        $this->assertStringNotContainsString('<img', $html);
+        $this->assertStringContainsString('inseguro', $html);
+        $this->assertStringContainsString('pixel', $html);
+        $this->assertSame(1, substr_count($html, 'href='));
+        $this->assertStringContainsString('href="HTTPS://ejemplo.com/c"', $html);
     }
 }
