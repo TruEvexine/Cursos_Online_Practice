@@ -32,7 +32,7 @@ class AuthAndRolesTest extends TestCase
 
         $this->followingRedirects()->get('/dashboard')
             ->assertOk()
-            ->assertSee('Has iniciado sesión como')
+            ->assertSee('Hola, '.$user->name)
             ->assertSee($roleName);
     }
 

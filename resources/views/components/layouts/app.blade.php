@@ -4,12 +4,12 @@
     $user = auth()->user();
     $nav = [];
     if ($user?->hasVerifiedEmail()) {
-        $nav[] = ['Inicio', $user->role->slug.'.home'];
+        $nav[] = $user->hasRole('alumno') ? ['Mis cursos', 'alumno.home', ['alumno.*', 'reader.*']] : ['Inicio', $user->role->slug.'.home'];
         if ($user->hasRole('super_admin')) {
             $nav[] = ['Monitoreo', 'director.home'];
         }
         if ($user->can('viewAny', App\Models\Course::class)) {
-            $nav[] = [$user->hasRole('ponente') ? 'Mis cursos' : 'Cursos', 'courses.index', ['courses.*', 'blocks.*', 'topics.*', 'materials.*', 'students.*']];
+            $nav[] = [$user->hasRole('ponente') ? 'Mis cursos' : 'Cursos', 'courses.index', ['courses.*', 'blocks.*', 'topics.*', 'materials.*', 'students.*', 'reader.*']];
         }
         $nav[] = ['Mi perfil', 'profile.edit'];
     }
@@ -24,6 +24,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-canvas font-sans text-ink antialiased">
+    {{ $banner ?? '' }}
     <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-field focus:bg-surface focus:px-4 focus:py-2">Saltar al contenido</a>
 
     @auth

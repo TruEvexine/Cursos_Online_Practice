@@ -49,7 +49,7 @@
         @csrf
         <h2 class="font-serif text-xl font-semibold">Nuevo bloque</h2>
         <x-field name="title" label="Título del bloque" required maxlength="160" />
-        <x-field name="description" label="Descripción (opcional)" type="textarea" rows="3" maxlength="2000" />
+        <x-field name="description" label="Resultados esperados (opcional)" type="textarea" rows="3" help="Qué podrá hacer el alumno al terminar el bloque; se muestra en el temario." maxlength="2000" />
         <x-field name="position" label="Posición" type="number" :value="$nextPosition" min="0" max="65535" required class="max-w-40"
                  help="Los bloques se ordenan de menor a mayor." />
         <button type="submit" class="min-h-11 rounded-field bg-primary px-6 font-semibold text-canvas hover:bg-primary-hover">Agregar bloque</button>

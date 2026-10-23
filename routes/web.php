@@ -4,6 +4,7 @@ use App\Http\Controllers\BlockController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
@@ -18,10 +19,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin', $home('super_admin'))->middleware('role:super_admin')->name('super_admin.home');
     Route::get('/direccion', $home('director'))->middleware('role:director,super_admin')->name('director.home');
     Route::get('/ponente', $home('ponente'))->middleware('role:ponente')->name('ponente.home');
-    Route::get('/alumno', $home('alumno'))->middleware('role:alumno')->name('alumno.home');
+    Route::get('/alumno', [ReaderController::class, 'myCourses'])->middleware('role:alumno')->name('alumno.home');
 
     // Permisos en CoursePolicy (cada acción del controlador la autoriza).
     Route::resource('cursos', CourseController::class)->parameters(['cursos' => 'course'])->except('show')->names('courses');
+
+    // Lectura: alumno inscrito, director y vista previa del dueño o super admin (CoursePolicy::view).
+    Route::get('/cursos/{course}', [ReaderController::class, 'course'])->name('reader.course');
+    Route::get('/temas/{topic}', [ReaderController::class, 'topic'])->name('reader.topic');
 
     // Rutas shallow: el curso se deduce del bloque o tema, así que no se pueden mezclar ids de cursos distintos.
     Route::get('/cursos/{course}/bloques', [BlockController::class, 'index'])->name('blocks.index');

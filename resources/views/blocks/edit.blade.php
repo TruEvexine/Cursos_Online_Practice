@@ -8,7 +8,7 @@
         @csrf
         @method('PUT')
         <x-field name="title" label="Título del bloque" :value="$block->title" required maxlength="160" />
-        <x-field name="description" label="Descripción (opcional)" type="textarea" rows="3" :value="$block->description" maxlength="2000" />
+        <x-field name="description" label="Resultados esperados (opcional)" type="textarea" rows="3" help="Qué podrá hacer el alumno al terminar el bloque; se muestra en el temario." :value="$block->description" maxlength="2000" />
         <x-field name="position" label="Posición" type="number" :value="$block->position" min="0" max="65535" required class="max-w-40"
                  help="Los bloques se ordenan de menor a mayor." />
         <div class="flex flex-wrap items-center gap-4">
