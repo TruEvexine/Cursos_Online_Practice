@@ -9,7 +9,7 @@
             $nav[] = ['Monitoreo', 'director.home'];
         }
         if ($user->can('viewAny', App\Models\Course::class)) {
-            $nav[] = [$user->hasRole('ponente') ? 'Mis cursos' : 'Cursos', 'courses.index', ['courses.*', 'blocks.*', 'topics.*']];
+            $nav[] = [$user->hasRole('ponente') ? 'Mis cursos' : 'Cursos', 'courses.index', ['courses.*', 'blocks.*', 'topics.*', 'materials.*']];
         }
         $nav[] = ['Mi perfil', 'profile.edit'];
     }

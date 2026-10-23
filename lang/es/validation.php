@@ -46,5 +46,9 @@ return [
         'position' => 'posición',
         'is_required' => 'tema obligatorio',
         'content' => 'contenido',
+        'kind' => 'tipo',
+        'topic_id' => 'tema',
+        'file' => 'archivo',
+        'url' => 'enlace',
     ],
 ];
