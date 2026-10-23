@@ -4,8 +4,9 @@ Fuente de verdad: `database/schema.sql` (22 tablas + 1 vista). Se crea a mano de
 **la app no ejecuta migraciones**. Cambios futuros: archivos numerados en `database/changes/` (`001_*.sql`...),
 aplicados a mano y reflejados también en `schema.sql`.
 
-Probado en MariaDB 10.11 (carga limpia, re-ejecutable, restricciones y cascadas verificadas con datos de prueba).
-No se probó en MySQL 8 real: usa solo sintaxis común a ambos, pero si algo falla al cargarlo, avisa.
+Probado en MariaDB 10.11 (carga limpia, re-ejecutable, restricciones y cascadas verificadas con datos de prueba)
+y en **MySQL 8.0.46**, el servidor local real, donde viven `cursos_el_mai` y `cursos_el_mai_test` (esquemas idénticos, comparados
+con `information_schema` el 2026-10-22). Usa solo sintaxis común a ambos; si algo falla al cargarlo, avisa.
 
 ## Crear la base (tú, en tu consola)
 

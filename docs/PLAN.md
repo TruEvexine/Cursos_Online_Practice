@@ -139,5 +139,5 @@ No se instalan: **Graphify** (hooks de git y de Claude Code, y archivos grandes;
 - **Videollamada:** depende de un servicio externo; el spike de la Fase 5 decide Jitsi/JaaS o enlace externo.
 - **Chat en vivo:** Reverb necesita un proceso siempre encendido; en hosting compartido no corre. Definir dónde se despliega antes de la Fase 5.
 - **Subidas:** PHP por defecto limita archivos a ~2 MB; subir `upload_max_filesize` y `post_max_size` en el servidor.
-- **Esquema probado en MariaDB**, no en MySQL 8 real (ver `docs/DATABASE.md`).
+- **Esquema probado en MariaDB 10.11 y en MySQL 8.0.46** (el servidor local real; ver `docs/DATABASE.md`).
 - **Fuera de esta versión:** banco de preguntas aleatorio, certificados, pagos, notificaciones push, app móvil, co-ponentes, directores por grupo, exportar a CSV/PDF, XP e insignias (el mapa de misiones muestra progreso, sin puntos).
