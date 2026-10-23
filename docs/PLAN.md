@@ -83,10 +83,10 @@ Cada fase termina con la app funcionando, sin código a medias. Al inicio de cad
 - **Hecho cuando:** los 4 roles inician sesión y cada uno solo ve lo suyo; pruebas de permisos en verde.
 
 ### Fase 2 — Cursos y contenido
-- [ ] Ponente: CRUD de cursos, bloques, temas (Markdown) y materiales (archivo/enlace/video).
-- [ ] Agregar y quitar alumnos (invitación por correo; "quitar" = `removed`).
-- [ ] Alumno: "Mis cursos" y vista del curso (aún sin bloqueos).
-- [ ] Vista previa como alumno: botón en el constructor para el ponente dueño y el super admin; funciona en borrador; franja fija "Vista previa"; todo desbloqueado y **nunca** escribe `topic_progress` ni entregas.
+- [x] Ponente: CRUD de cursos, bloques, temas (Markdown) y materiales (archivo/enlace/video).
+- [x] Agregar y quitar alumnos (invitación por correo; "quitar" = `removed`).
+- [x] Alumno: "Mis cursos" y vista del curso (aún sin bloqueos).
+- [x] Vista previa como alumno: botón en el constructor para el ponente dueño y el super admin; funciona en borrador; franja fija "Vista previa"; todo desbloqueado y **nunca** escribe `topic_progress` ni entregas.
 - **Hecho cuando:** un ponente arma un curso completo y un alumno inscrito lo lee; otro alumno recibe 403.
 
 ### Fase 2b — Imágenes (después de la tarea 6 de la Fase 2)
