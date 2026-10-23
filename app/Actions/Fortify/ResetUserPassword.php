@@ -15,6 +15,7 @@ class ResetUserPassword implements ResetsUserPasswords
             'password' => ['required', 'string', Password::min(12), 'confirmed'],
         ])->validate();
 
-        $user->forceFill(['password' => $input['password']])->save();
+        // Usar el enlace del correo prueba que el correo es suyo (también para alumnos invitados).
+        $user->forceFill(['password' => $input['password'], 'email_verified_at' => $user->email_verified_at ?? now()])->save();
     }
 }

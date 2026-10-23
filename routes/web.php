@@ -4,6 +4,7 @@ use App\Http\Controllers\BlockController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/cursos/{course}/materiales', [MaterialController::class, 'store'])->name('materials.store');
     Route::delete('/materiales/{material}', [MaterialController::class, 'destroy'])->name('materials.destroy');
     Route::get('/materiales/{material}/descargar', [MaterialController::class, 'download'])->name('materials.download');
+
+    Route::get('/cursos/{course}/alumnos', [StudentController::class, 'index'])->name('students.index');
+    Route::post('/cursos/{course}/alumnos', [StudentController::class, 'store'])->name('students.store');
+    Route::delete('/inscripciones/{enrollment}', [StudentController::class, 'destroy'])->name('students.destroy');
 
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/perfil', [ProfileController::class, 'update'])->name('profile.update');
