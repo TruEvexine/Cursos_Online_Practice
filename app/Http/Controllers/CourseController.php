@@ -64,8 +64,9 @@ class CourseController extends Controller
     {
         Gate::authorize('delete', $course);
 
-        if ($course->enrollments()->where('status', 'active')->exists()) {
-            return back()->withErrors(['delete' => 'Este curso tiene alumnos inscritos, así que no se puede borrar. Archívalo: cambia su estado a «Archivado» y guarda.']);
+        // Alumnos activos o que ya lo terminaron conservan su historial: el curso se archiva, no se borra.
+        if ($course->enrollments()->whereIn('status', ['active', 'completed'])->exists()) {
+            return back()->withErrors(['delete' => 'Este curso tiene alumnos inscritos o que ya lo terminaron, así que no se puede borrar. Archívalo: cambia su estado a «Archivado» y guarda.']);
         }
 
         $course->delete();

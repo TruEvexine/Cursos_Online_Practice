@@ -93,15 +93,17 @@ class CourseCrudTest extends TestCase
         $this->actingAs(User::factory()->role('alumno')->create())->get('/cursos')->assertForbidden();
     }
 
-    public function test_course_with_active_students_is_not_deleted_only_archivable(): void
+    public function test_course_with_active_or_completed_students_is_not_deleted_only_archivable(): void
     {
-        $course = Course::factory()->enroll(User::factory()->create())->create();
+        foreach (['active', 'completed'] as $status) {
+            $course = Course::factory()->enroll(User::factory()->create(), $status)->create();
 
-        $this->actingAs($course->ponente)->from("/cursos/{$course->id}/editar")->delete("/cursos/{$course->id}")
-            ->assertRedirect("/cursos/{$course->id}/editar")
-            ->assertSessionHasErrors(['delete' => 'Este curso tiene alumnos inscritos, así que no se puede borrar. Archívalo: cambia su estado a «Archivado» y guarda.']);
+            $this->actingAs($course->ponente)->from("/cursos/{$course->id}/editar")->delete("/cursos/{$course->id}")
+                ->assertRedirect("/cursos/{$course->id}/editar")
+                ->assertSessionHasErrors(['delete' => 'Este curso tiene alumnos inscritos o que ya lo terminaron, así que no se puede borrar. Archívalo: cambia su estado a «Archivado» y guarda.']);
 
-        $this->assertNotSoftDeleted($course);
+            $this->assertNotSoftDeleted($course);
+        }
     }
 
     public function test_course_without_active_students_is_soft_deleted(): void

@@ -6,7 +6,7 @@ Rama `feature/fase-2-cursos` (sale de `fase-0-1`). El esquema actual ya cubre la
 
 - **Ponente** (super admin en todos los cursos):
   - Cursos: crear, editar y borrar. Estado `draft` / `published` / `archived`.
-    Borrar: con inscripciones activas **no se borra** (mensaje que sugiere archivarlo); sin ellas, borrado lógico.
+    Borrar: con inscripciones `active` o `completed` **no se borra** (mensaje que sugiere archivarlo); solo con `removed` o sin inscripciones, borrado lógico.
   - Bloques y temas: crear, editar y borrar. El orden se da con un campo numérico `position`; los temas tienen `is_required`.
   - Contenido del tema en Markdown: `Str::markdown($texto, ['html_input' => 'strip', 'allow_unsafe_links' => false])`.
   - Materiales:
@@ -44,7 +44,7 @@ Bloqueos y progreso de misiones, tareas, exámenes, avisos, portada del curso, r
 - Alumno inscrito (`active` o `completed`) lee el curso, el tema y descarga materiales; alumno no inscrito, quitado o en un curso en borrador recibe 403.
 - El Markdown quita `<script>` y los enlaces `javascript:`. Se rechazan subidas svg, html y zip; la ruta guardada es aleatoria y privada.
 - Inscripción: alumno existente, correo nuevo (cuenta, aviso con texto de caducidad y verificación al fijar la contraseña), otro rol, reinscripción; quitar deja registro en la bitácora.
-- No se borra un curso con inscripciones activas.
+- No se borra un curso con inscripciones `active` o `completed`.
 - Aceptación: el ponente arma el curso, el alumno inscrito lo lee y otro alumno recibe 403.
 
 ## Tareas (un commit por tarea)

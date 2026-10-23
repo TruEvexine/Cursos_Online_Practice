@@ -50,7 +50,7 @@
                 @error('delete')
                     <p role="alert" class="mt-3 rounded-field bg-danger-soft px-4 py-3 text-danger"><span aria-hidden="true">⚠</span> {{ $message }}</p>
                 @enderror
-                <p class="mt-3 text-muted">Si el curso tiene alumnos inscritos no se puede borrar; archívalo. Sin alumnos, desaparece de las listas.</p>
+                <p class="mt-3 text-muted">Si el curso tiene alumnos inscritos o que ya lo terminaron, no se puede borrar; archívalo. Si no, desaparece de las listas.</p>
                 <form method="POST" action="{{ route('courses.destroy', $course) }}" class="mt-4">
                     @csrf
                     @method('DELETE')
