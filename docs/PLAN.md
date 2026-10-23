@@ -86,18 +86,28 @@ Cada fase termina con la app funcionando, sin código a medias. Al inicio de cad
 - [ ] Ponente: CRUD de cursos, bloques, temas (Markdown) y materiales (archivo/enlace/video).
 - [ ] Agregar y quitar alumnos (invitación por correo; "quitar" = `removed`).
 - [ ] Alumno: "Mis cursos" y vista del curso (aún sin bloqueos).
+- [ ] Vista previa como alumno: botón en el constructor para el ponente dueño y el super admin; funciona en borrador; franja fija "Vista previa"; todo desbloqueado y **nunca** escribe `topic_progress` ni entregas.
 - **Hecho cuando:** un ponente arma un curso completo y un alumno inscrito lo lee; otro alumno recibe 403.
+
+### Fase 2b — Imágenes (después de la tarea 6 de la Fase 2)
+- [ ] Portada del curso (`cover_path`) e imágenes dentro de los temas, subidas desde el constructor por el ponente dueño y el super admin (no el director).
+- [ ] Mismas reglas que la foto de perfil: WebP, sin metadatos, almacenamiento privado, nombre aleatorio, servidas por un controlador que autoriza (inscrito `active` o `completed`, dueño, super admin, director).
 
 ### Fase 3 — Misiones, tareas y calificaciones
 - [ ] Reglas de desbloqueo (sección 4) con pruebas, mapa de misiones.
 - [ ] Tareas y entregas (texto y/o archivo), edición de la entrega hasta que se califica.
 - [ ] Ponente: bandeja de pendientes, calificar con retroalimentación, devolver.
 - [ ] Alumno: calificaciones en solo lectura + promedio ponderado.
+- [ ] Al final de la fase: recompensas opcionales ("comodines") para tareas (sección 9).
 - **Hecho cuando:** un alumno entrega, el ponente califica, el siguiente bloque se abre y la nota aparece en su vista.
+
+### Fase 3b — Pasada de diseño (después de la Fase 3)
+- [ ] Identidad de Gaining Grades con las referencias de `docs/DESIGN.md`: wordmark, paleta y pulido visual con `ui-ux-pro-max` y `taste-skill` sobre las pantallas reales.
 
 ### Fase 4 — Exámenes
 - [ ] Constructor de exámenes, publicación con ventana de fechas y tiempo límite.
 - [ ] Presentar examen (cronómetro, guardado de respuestas), autocalificación y calificación manual de abiertas.
+- [ ] Al final de la fase: comodín de intento extra de examen (sección 9).
 - **Hecho cuando:** un examen mixto se presenta y califica de punta a punta, incluido el rechazo por tiempo vencido.
 
 ### Fase 5 — Avisos y clase en vivo
@@ -140,4 +150,4 @@ No se instalan: **Graphify** (hooks de git y de Claude Code, y archivos grandes;
 - **Chat en vivo:** Reverb necesita un proceso siempre encendido; en hosting compartido no corre. Definir dónde se despliega antes de la Fase 5.
 - **Subidas:** PHP por defecto limita archivos a ~2 MB; subir `upload_max_filesize` y `post_max_size` en el servidor.
 - **Esquema probado en MariaDB 10.11 y en MySQL 8.0.46** (el servidor local real; ver `docs/DATABASE.md`).
-- **Fuera de esta versión:** banco de preguntas aleatorio, certificados, pagos, notificaciones push, app móvil, co-ponentes, directores por grupo, exportar a CSV/PDF, XP e insignias (el mapa de misiones muestra progreso, sin puntos).
+- **Fuera de esta versión:** banco de preguntas aleatorio, certificados, pagos, notificaciones push, app móvil, co-ponentes, directores por grupo, exportar a CSV/PDF, rankings, rachas diarias, puntos globales (XP) e insignias públicas (el mapa de misiones muestra progreso, sin puntos). Las recompensas opcionales por curso sí están en el plan (sección 9).
