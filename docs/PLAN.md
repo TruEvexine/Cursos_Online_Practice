@@ -151,3 +151,23 @@ No se instalan: **Graphify** (hooks de git y de Claude Code, y archivos grandes;
 - **Subidas:** PHP por defecto limita archivos a ~2 MB; subir `upload_max_filesize` y `post_max_size` en el servidor.
 - **Esquema probado en MariaDB 10.11 y en MySQL 8.0.46** (el servidor local real; ver `docs/DATABASE.md`).
 - **Fuera de esta versión:** banco de preguntas aleatorio, certificados, pagos, notificaciones push, app móvil, co-ponentes, directores por grupo, exportar a CSV/PDF, rankings, rachas diarias, puntos globales (XP) e insignias públicas (el mapa de misiones muestra progreso, sin puntos). Las recompensas opcionales por curso sí están en el plan (sección 9).
+
+## 9. Recompensas opcionales ("comodines")
+
+Idea del dueño. Se implementa al final de las Fases 3 y 4. Es **totalmente opcional** y el ponente la configura por curso: sin reglas activas no existe nada visible.
+
+- **Regla:** N tareas calificadas consecutivas, cada una entregada a más tardar en su fecha límite y con nota ≥ X % del máximo.
+  - Las tareas sin fecha límite no cuentan.
+  - Premia puntualidad y calidad, **no** velocidad.
+  - Una tarea tarde, omitida o con nota menor reinicia la cuenta.
+- **Premios** (uno por regla):
+  - omitir una tarea (no cuenta en el promedio);
+  - puntos extra, con tope;
+  - un intento extra de examen;
+  - prórroga de 24 h.
+
+  Todos con tope por alumno y por curso.
+- **Alumno:** ve su saldo de comodines y cuándo puede usarlos. **Ponente:** puede revocar un comodín.
+- Toda concesión, uso y revocación queda en `audit_logs`. Sin rankings ni comparación entre alumnos.
+- **Esquema:** requiere tablas nuevas (`reward_rules`, `reward_grants`). Propuesta en `database/changes/001_comodines.sql`, **sin aplicar**; la aplica el dueño a mano.
+- Preguntas abiertas (en las specs de las Fases 3 y 4): qué significa "ayuda en el examen", si "omitir tarea" cuenta como 100 % o se excluye del promedio, y los topes.
