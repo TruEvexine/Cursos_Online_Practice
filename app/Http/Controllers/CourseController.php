@@ -43,7 +43,7 @@ class CourseController extends Controller
         $course->ponente_id = $request->user()->hasRole('ponente') ? $request->user()->id : $request->validated('ponente_id');
         $course->save();
 
-        return redirect()->route('courses.edit', $course)->with('status', 'Curso creado.');
+        return redirect()->route('blocks.index', $course)->with('status', 'Curso creado. Ahora agrega su primer bloque.');
     }
 
     public function edit(Course $course)

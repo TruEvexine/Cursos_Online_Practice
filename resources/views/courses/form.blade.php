@@ -5,7 +5,12 @@
 
 <x-layouts.app :title="$heading.' — Cursos el Mai'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), ($editing ? $course->title : 'Nuevo curso') => null]">
-    <h1 class="mb-6 font-serif text-3xl font-semibold">{{ $heading }}</h1>
+    @if ($editing)
+        <h1 class="mb-4 font-serif text-3xl font-semibold">{{ $course->title }}</h1>
+        <x-course-tabs :course="$course" current="details" />
+    @else
+        <h1 class="mb-6 font-serif text-3xl font-semibold">{{ $heading }}</h1>
+    @endif
 
     <form method="POST" action="{{ $editing ? route('courses.update', $course) : route('courses.store') }}"
           class="max-w-2xl space-y-6 rounded-card border border-line bg-surface p-6" novalidate>

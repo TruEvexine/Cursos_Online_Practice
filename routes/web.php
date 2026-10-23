@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\BlockController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -18,6 +20,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Permisos en CoursePolicy (cada acción del controlador la autoriza).
     Route::resource('cursos', CourseController::class)->parameters(['cursos' => 'course'])->except('show')->names('courses');
+
+    // Rutas shallow: el curso se deduce del bloque o tema, así que no se pueden mezclar ids de cursos distintos.
+    Route::get('/cursos/{course}/bloques', [BlockController::class, 'index'])->name('blocks.index');
+    Route::post('/cursos/{course}/bloques', [BlockController::class, 'store'])->name('blocks.store');
+    Route::get('/bloques/{block}/editar', [BlockController::class, 'edit'])->name('blocks.edit');
+    Route::put('/bloques/{block}', [BlockController::class, 'update'])->name('blocks.update');
+    Route::delete('/bloques/{block}', [BlockController::class, 'destroy'])->name('blocks.destroy');
+
+    Route::get('/bloques/{block}/temas/crear', [TopicController::class, 'create'])->name('topics.create');
+    Route::post('/bloques/{block}/temas', [TopicController::class, 'store'])->name('topics.store');
+    Route::get('/temas/{topic}/editar', [TopicController::class, 'edit'])->name('topics.edit');
+    Route::put('/temas/{topic}', [TopicController::class, 'update'])->name('topics.update');
+    Route::delete('/temas/{topic}', [TopicController::class, 'destroy'])->name('topics.destroy');
 
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/perfil', [ProfileController::class, 'update'])->name('profile.update');

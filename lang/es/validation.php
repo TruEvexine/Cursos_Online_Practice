@@ -8,8 +8,11 @@ return [
     'max' => [
         'string' => 'El campo :attribute no debe tener más de :max caracteres.',
         'file' => 'El archivo :attribute no debe pesar más de :max KB.',
+        'numeric' => 'El campo :attribute no debe ser mayor que :max.',
     ],
-    'min' => ['string' => 'El campo :attribute debe tener al menos :min caracteres.'],
+    'min' => ['string' => 'El campo :attribute debe tener al menos :min caracteres.', 'numeric' => 'El campo :attribute debe ser :min o mayor.'],
+    'integer' => 'El campo :attribute debe ser un número entero.',
+    'boolean' => 'El campo :attribute debe ser sí o no.',
     'unique' => 'Ese :attribute ya está registrado.',
     'confirmed' => 'La confirmación de :attribute no coincide.',
     'file' => 'El campo :attribute debe ser un archivo.',
@@ -40,5 +43,8 @@ return [
         'starts_on' => 'fecha de inicio',
         'ends_on' => 'fecha de fin',
         'ponente_id' => 'ponente',
+        'position' => 'posición',
+        'is_required' => 'tema obligatorio',
+        'content' => 'contenido',
     ],
 ];

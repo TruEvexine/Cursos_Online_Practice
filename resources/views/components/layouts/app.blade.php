@@ -9,7 +9,7 @@
             $nav[] = ['Monitoreo', 'director.home'];
         }
         if ($user->can('viewAny', App\Models\Course::class)) {
-            $nav[] = [$user->hasRole('ponente') ? 'Mis cursos' : 'Cursos', 'courses.index'];
+            $nav[] = [$user->hasRole('ponente') ? 'Mis cursos' : 'Cursos', 'courses.index', ['courses.*', 'blocks.*', 'topics.*']];
         }
         $nav[] = ['Mi perfil', 'profile.edit'];
     }
@@ -47,8 +47,11 @@
         @if ($nav)
             <nav aria-label="Principal" class="border-b border-line bg-surface lg:min-h-[calc(100vh-4.5rem)] lg:w-56 lg:shrink-0 lg:border-b-0 lg:border-r">
                 <ul class="flex gap-1 overflow-x-auto px-2 py-2 lg:flex-col">
-                    @foreach ($nav as [$label, $route])
-                        @php $active = request()->routeIs(Str::beforeLast($route, '.').'.*'); @endphp
+                    @foreach ($nav as $item)
+                        @php
+                            [$label, $route] = $item;
+                            $active = request()->routeIs(...($item[2] ?? [Str::beforeLast($route, '.').'.*']));
+                        @endphp
                         <li>
                             <a href="{{ route($route) }}" @if ($active) aria-current="page" @endif
                                class="flex min-h-11 items-center whitespace-nowrap rounded-field px-3 {{ $active ? 'bg-primary-soft font-semibold text-primary' : 'hover:bg-sunken' }}">
@@ -65,7 +68,7 @@
                 <nav aria-label="Migas de pan" class="mb-4 text-sm text-muted">
                     <ol class="flex flex-wrap items-center gap-x-2">
                         @foreach ($breadcrumbs as $label => $url)
-                            <li>@if ($url)<a href="{{ $url }}" class="inline-flex min-h-11 items-center underline">{{ $label }}</a> <span aria-hidden="true">/</span>@else<span aria-current="page">{{ $label }}</span>@endif</li>
+                            <li class="whitespace-nowrap">@if ($url)<a href="{{ $url }}" class="inline-flex min-h-11 items-center underline">{{ Str::limit($label, 32) }}</a> <span aria-hidden="true">/</span>@else<span aria-current="page">{{ Str::limit($label, 32) }}</span>@endif</li>
                         @endforeach
                     </ol>
                 </nav>

@@ -46,7 +46,10 @@
                         <td class="flex justify-between gap-4 py-1 md:table-cell md:px-4 md:py-3 md:whitespace-nowrap"><span class="text-muted md:hidden">Actualizado</span>{{ $course->updated_at?->timezone('America/Mexico_City')->isoFormat('D MMM YYYY') }}</td>
                         <td class="pt-2 md:table-cell md:px-4 md:py-3 md:text-right">
                             @can('update', $course)
-                                <a href="{{ route('courses.edit', $course) }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline">Editar<span class="sr-only"> «{{ $course->title }}»</span></a>
+                                <div class="flex gap-4 md:justify-end">
+                                    <a href="{{ route('blocks.index', $course) }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline">Contenido<span class="sr-only"> de «{{ $course->title }}»</span></a>
+                                    <a href="{{ route('courses.edit', $course) }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline">Datos<span class="sr-only"> de «{{ $course->title }}»</span></a>
+                                </div>
                             @endcan
                         </td>
                     </tr>
