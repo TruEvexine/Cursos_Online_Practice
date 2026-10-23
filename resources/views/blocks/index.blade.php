@@ -1,4 +1,4 @@
-<x-layouts.app :title="'Contenido: '.$course->title.' — Cursos el Mai'"
+<x-layouts.app :title="'Contenido: '.$course->title.' — Gaining Grades'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), $course->title => null]">
     <h1 class="mb-4 font-serif text-3xl font-semibold">{{ $course->title }}</h1>
     <x-course-tabs :course="$course" current="content" />

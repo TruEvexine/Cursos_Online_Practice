@@ -1,4 +1,4 @@
-@props(['title' => 'Cursos el Mai', 'breadcrumbs' => []])
+@props(['title' => 'Gaining Grades', 'breadcrumbs' => []])
 
 @php
     $user = auth()->user();
@@ -29,7 +29,7 @@
     @auth
         <header class="border-b border-line bg-surface">
             <div class="flex items-center justify-between gap-4 px-4 py-3">
-                <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 items-center whitespace-nowrap font-serif text-xl font-semibold">Cursos el Mai</a>
+                <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 items-center whitespace-nowrap font-serif text-xl font-semibold">Gaining Grades</a>
                 <div class="flex items-center gap-3">
                     <span class="hidden text-muted sm:inline">{{ $user->name }}</span>
                     {{-- En móvil no cabe junto al botón; el rol también se ve en la página de inicio. --}}

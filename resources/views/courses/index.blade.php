@@ -1,6 +1,6 @@
 @php $showPonente = ! auth()->user()->hasRole('ponente'); @endphp
 
-<x-layouts.app title="Cursos — Cursos el Mai" :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => null]">
+<x-layouts.app title="Cursos — Gaining Grades" :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => null]">
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
         <h1 class="font-serif text-3xl font-semibold">{{ $showPonente ? 'Cursos' : 'Mis cursos' }}</h1>
         @can('create', App\Models\Course::class)

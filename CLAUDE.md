@@ -1,4 +1,4 @@
-# Cursos el Mai — instrucciones para Claude Code
+# Gaining Grades — instrucciones para Claude Code
 
 Plataforma de cursos en línea (Laravel 13 + MySQL local). Roles: `super_admin`, `director`, `ponente`, `alumno`.
 Lee antes de trabajar: `docs/PLAN.md` (fases, permisos, reglas), `docs/DATABASE.md` (esquema), `docs/DESIGN.md` (diseño).

@@ -1,4 +1,4 @@
-<x-layouts.app title="Nueva contraseña — Cursos el Mai">
+<x-layouts.app title="Nueva contraseña — Gaining Grades">
     <div class="mx-auto max-w-sm">
         <h1 class="mb-6 font-serif text-3xl font-semibold">Nueva contraseña</h1>
 

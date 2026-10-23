@@ -4,7 +4,7 @@
     $heading = $editing ? 'Editar tema' : 'Nuevo tema';
 @endphp
 
-<x-layouts.app :title="$heading.' — Cursos el Mai'"
+<x-layouts.app :title="$heading.' — Gaining Grades'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), $course->title => route('blocks.index', $course), $heading => null]">
     <p class="text-muted">Bloque {{ $block->position }}: {{ $block->title }}</p>
     <h1 class="mb-6 font-serif text-3xl font-semibold">{{ $heading }}</h1>

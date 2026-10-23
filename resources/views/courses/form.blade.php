@@ -3,7 +3,7 @@
     $heading = $editing ? 'Editar curso' : 'Nuevo curso';
 @endphp
 
-<x-layouts.app :title="$heading.' — Cursos el Mai'"
+<x-layouts.app :title="$heading.' — Gaining Grades'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), ($editing ? $course->title : 'Nuevo curso') => null]">
     @if ($editing)
         <h1 class="mb-4 font-serif text-3xl font-semibold">{{ $course->title }}</h1>

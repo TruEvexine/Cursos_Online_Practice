@@ -1,4 +1,4 @@
-# Base de datos — Cursos el Mai
+# Base de datos — Gaining Grades
 
 Fuente de verdad: `database/schema.sql` (22 tablas + 1 vista). Se crea a mano desde la consola de MySQL;
 **la app no ejecuta migraciones**. Cambios futuros: archivos numerados en `database/changes/` (`001_*.sql`...),

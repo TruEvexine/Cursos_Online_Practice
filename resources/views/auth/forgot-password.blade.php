@@ -1,4 +1,4 @@
-<x-layouts.app title="Recuperar contraseña — Cursos el Mai">
+<x-layouts.app title="Recuperar contraseña — Gaining Grades">
     <div class="mx-auto max-w-sm">
         <h1 class="mb-2 font-serif text-3xl font-semibold">Recuperar contraseña</h1>
         <p class="mb-6 text-muted">Escribe tu correo y, si tienes cuenta, te enviaremos un enlace para crear una nueva contraseña.</p>

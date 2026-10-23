@@ -1,6 +1,6 @@
 @php $course = $block->course; @endphp
 
-<x-layouts.app :title="'Editar bloque — Cursos el Mai'"
+<x-layouts.app :title="'Editar bloque — Gaining Grades'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), $course->title => route('blocks.index', $course), 'Editar bloque' => null]">
     <h1 class="mb-6 font-serif text-3xl font-semibold">Editar bloque</h1>
 

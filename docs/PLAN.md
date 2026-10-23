@@ -1,4 +1,4 @@
-# Plan — Cursos el Mai
+# Plan — Gaining Grades
 
 Plataforma web de cursos en línea con cuatro roles: **alumno**, **ponente**, **director** y **super admin**.
 Estado: planeación (repo vacío). Última revisión: 2026-10-13.

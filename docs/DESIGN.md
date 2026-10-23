@@ -1,4 +1,4 @@
-# Diseño — Cursos el Mai
+# Diseño — Gaining Grades
 
 Objetivo: moderno, responsivo y **formal/educativo**. Claro por defecto (se estudia mejor de día), con tema oscuro opcional.
 Diferente de tu práctica anterior (oscuro con brillos): aquí manda la legibilidad y la calma; la "gracia" vive en un solo lugar, el **mapa de misiones**.

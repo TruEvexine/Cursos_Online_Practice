@@ -1,6 +1,6 @@
 @php $limited = $user->hasRole('alumno'); @endphp
 
-<x-layouts.app title="Mi perfil — Cursos el Mai" :breadcrumbs="['Inicio' => route('dashboard'), 'Mi perfil' => null]">
+<x-layouts.app title="Mi perfil — Gaining Grades" :breadcrumbs="['Inicio' => route('dashboard'), 'Mi perfil' => null]">
     <h1 class="mb-6 font-serif text-3xl font-semibold">Mi perfil</h1>
 
     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data"

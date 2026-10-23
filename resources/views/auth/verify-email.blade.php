@@ -1,4 +1,4 @@
-<x-layouts.app title="Verifica tu correo — Cursos el Mai">
+<x-layouts.app title="Verifica tu correo — Gaining Grades">
     <div class="mx-auto max-w-md">
         <h1 class="mb-2 font-serif text-3xl font-semibold">Verifica tu correo</h1>
         <p class="mb-6 text-muted">

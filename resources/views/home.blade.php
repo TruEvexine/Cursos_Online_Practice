@@ -8,7 +8,7 @@
     ][$area];
 @endphp
 
-<x-layouts.app :title="$heading.' — Cursos el Mai'">
+<x-layouts.app :title="$heading.' — Gaining Grades'">
     <p class="mb-2 text-muted">Hola, {{ auth()->user()->name }}</p>
 
     <h1 class="font-serif text-3xl font-semibold">
