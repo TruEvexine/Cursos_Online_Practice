@@ -3,7 +3,24 @@
 Objetivo: moderno, responsivo y **formal/educativo**. Claro por defecto (se estudia mejor de día), con tema oscuro opcional.
 Diferente de tu práctica anterior (oscuro con brillos): aquí manda la legibilidad y la calma; la "gracia" vive en un solo lugar, el **mapa de misiones**.
 
-Referencias de sensación (solo para orientarse, sin copiar): IBM (formal y claro), Notion (lectura limpia), Linear (tablas y paneles densos pero ordenados).
+## Referencias
+
+Solo inspiración: no se copian logos, textos, ilustraciones ni identidad. De sus colores y tipografías no tenemos datos, así que no se toman de ahí.
+
+- **Coursera:** temario por módulos con resultados esperados, fechas límite visibles, navegación con progreso. Evitar: revisión anónima entre pares.
+- **Duolingo:** temas cortos, poder repasar lo ya hecho, ver hitos y áreas por reforzar. Evitar: rankings, "vidas", rachas diarias, anuncios.
+- **Domestika:** materiales descargables y lecciones bien presentadas. Nuestra ventaja: el ponente califica y deja retroalimentación visible.
+- **Santander Open Academy:** flujo simple; la ficha del curso muestra fechas y requisitos.
+- **Fundación Volta** (estudiagratis.fundacionvolta.com): catálogo por áreas con ícono, tarjetas con descripción corta. El certificado con QR queda fuera de esta versión.
+- **Aprende.mx** (cursos.aprende.gob.mx) y **aprende.org:** tarjetas con portada, institución y fecha de inicio; "saltar al contenido"; tono institucional.
+
+Lo que se adopta en el producto:
+
+- Temario con resultados esperados por bloque (`blocks.description`).
+- Fecha de entrega y "próxima entrega" visibles.
+- Calificaciones por bloque con "por reforzar" (notas bajas).
+- Retroalimentación del ponente junto a la nota.
+- Tarjetas de curso con portada y fechas.
 
 ## 1. Principios
 
