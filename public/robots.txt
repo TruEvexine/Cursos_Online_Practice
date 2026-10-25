@@ -1,2 +1,6 @@
 User-agent: *
-Disallow:
+Disallow: /cursos
+Disallow: /temas
+Disallow: /bloques
+Disallow: /materiales
+Disallow: /perfil

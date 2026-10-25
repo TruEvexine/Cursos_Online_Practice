@@ -92,3 +92,9 @@
 .prose-content table { display: block; overflow-x: auto; border-collapse: collapse; }
 .prose-content th, .prose-content td { border: 1px solid var(--border); padding: 0.4em 0.75em; text-align: left; }
 .prose-content hr { border-color: var(--border); }
+
+/* Portada: el anillo del nodo se traza una vez al cargar (DESIGN §7: nada en bucle). */
+.motif-ring { color: var(--primary); }
+.motif-ring circle { stroke-dasharray: 100; animation: motif-draw 400ms cubic-bezier(.2,.8,.2,1) both; }
+@keyframes motif-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .motif-ring circle { animation: none; } }

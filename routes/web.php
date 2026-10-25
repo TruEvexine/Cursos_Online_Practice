@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReaderController;
@@ -9,7 +10,11 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+// Portada pública y páginas informativas.
+Route::get('/', LandingController::class)->name('home');
+Route::view('/sobre-nosotros', 'public.about')->name('about');
+Route::view('/aviso-de-privacidad', 'public.privacy')->name('privacy');
+Route::view('/terminos', 'public.terms')->name('terms');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Cada rol tiene su propio inicio; /dashboard (destino tras el login) manda al que le toca.
