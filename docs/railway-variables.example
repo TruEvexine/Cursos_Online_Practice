@@ -1,0 +1,54 @@
+# Variables para Railway (cárgalas en el panel del servicio; este archivo no lleva secretos).
+# Guía: docs/DEPLOY.md. Es un ejemplo para pegar en Railway (Variables → Raw Editor), no un archivo .env.
+
+APP_NAME="Gaining Grades"
+APP_ENV=production
+# php artisan key:generate --show (en tu máquina) y pega el valor
+APP_KEY=
+APP_DEBUG=false
+APP_URL=https://cursos.tudominio.com
+APP_LOCALE=es
+APP_FALLBACK_LOCALE=es
+
+# '*' solo es seguro si el servicio NO tiene TCP proxy ni otro acceso directo (solo el proxy HTTP de Railway).
+TRUSTED_PROXIES=*
+
+LOG_CHANNEL=stderr
+LOG_LEVEL=warning
+
+# MySQL de Railway con el usuario de la app (sin DDL), no root.
+DB_CONNECTION=mysql
+DB_HOST=${{MySQL.MYSQLHOST}}
+DB_PORT=${{MySQL.MYSQLPORT}}
+DB_DATABASE=${{MySQL.MYSQLDATABASE}}
+DB_USERNAME=cursos_app
+# la clave que pusiste al crear cursos_app en Railway
+DB_PASSWORD=
+
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+SESSION_SECURE_COOKIE=true
+SESSION_SAME_SITE=lax
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+FILESYSTEM_DISK=local
+
+# Correo transaccional. MAIL_MAILER=log hace que la app no arranque en producción.
+# En los planes Free/Trial/Hobby de Railway el SMTP saliente está bloqueado: usa la API HTTPS del proveedor
+# (Laravel trae transportes para postmark, resend, mailgun y ses; algunos requieren un paquete: pregunta antes).
+MAIL_MAILER=smtp
+MAIL_SCHEME=null
+MAIL_HOST=smtp.proveedor.com
+MAIL_PORT=587
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_FROM_ADDRESS=no-responder@tudominio.com
+MAIL_FROM_NAME="Gaining Grades"
+
+SITE_CONTACT_EMAIL=contacto@tudominio.com
+SITE_WHATSAPP=520000000000
+
+# Railpack / Caddy
+RAILPACK_SKIP_MIGRATIONS=true
+# PHP de Railpack no limita el tamaño de las subidas (upload_max_filesize = 0): Caddy corta a 12 MB.
+CADDY_SERVER_EXTRA_DIRECTIVES="request_body { max_size 12MB }"
