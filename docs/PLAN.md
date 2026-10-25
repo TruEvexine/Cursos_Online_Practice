@@ -21,8 +21,8 @@ Idioma: textos de la interfaz en español (es-MX, trato de "tú"); identificador
 
 ## 2. Supuestos a confirmar (cámbialos antes de la Fase 1 si no coinciden)
 
-1. **Sin registro público.** El super admin crea directores y ponentes; el ponente agrega alumnos por correo (si no existe, se crea la cuenta y se le envía un enlace para fijar su contraseña).
-2. **Director global:** ve a todos los ponentes y alumnos. Si habrá varios directores con grupos distintos, hay que añadir una tabla de asignación.
+1. **Sin registro público.** El super admin crea directores y ponentes; el ponente agrega alumnos por correo (si no existe, se crea la cuenta y se le envía un enlace para fijar su contraseña). *Cambia en la Fase 8b (registro abierto con validación de edad).*
+2. **Director global:** ve a todos los ponentes y alumnos. Si habrá varios directores con grupos distintos, hay que añadir una tabla de asignación. *Cambia en la Fase 8a (director por institución).*
 3. **Un ponente por curso** (sin co-ponentes).
 4. Un alumno puede estar en varios cursos; un curso, en varios alumnos.
 5. El examen "generado" se arma con preguntas que el ponente escribe (sin banco aleatorio todavía).
@@ -125,6 +125,45 @@ Cada fase termina con la app funcionando, sin código a medias. Al inicio de cad
 - [ ] Revisión de accesibilidad y movimiento (`design-motion-principles`, modo audit).
 - [ ] Respaldo (`mysqldump` + carpeta de archivos privados) y guía de despliegue con la plataforma que elijas.
 - **Hecho cuando:** lista de seguridad de `CLAUDE.md` sin pendientes y respaldo restaurado con éxito en una máquina limpia.
+
+### Fase 8 — Negocio (después de las Fases 3 y 4)
+
+**8a. Instituciones**
+- [ ] Organizaciones y membresías (ponentes y alumnos vinculados a una institución).
+- [ ] Director por institución: solo ve lo de su institución.
+- [ ] Alta masiva por CSV.
+
+**8b. Registro abierto con validación de edad** (la definición legal la valida un abogado; se implementa solo lo que se defina)
+- [ ] Fecha de nacimiento al registrarse.
+- [ ] Menores de 18: autorización de madre, padre o tutor, o alta por una escuela; solo los datos mínimos; sin perfil público.
+- [ ] Aceptación de términos y aviso de privacidad con fecha y versión.
+- [ ] Derechos ARCO y baja de cuenta.
+
+**8c. Catálogo público y cursos de pago por depósito o transferencia** (pasarela de pago, después)
+- [ ] Catálogo público de cursos.
+- [ ] Flujo: solicitud → datos de pago y referencia → comprobante → confirmación por quien cobra.
+- [ ] Estados de cada solicitud y registro en la bitácora.
+
+**8d. Tipos de curso**
+- [ ] On demand: se publica por lotes y avisa las novedades.
+- [ ] Pregrabado: video externo o incrustado (requiere CSP con el dominio del video; decidir hospedaje).
+
+**8e. Facturación e impuestos:** pregunta abierta (quién cobra, CFDI). No se implementa sin definición.
+
+**Instituciones y las Fases 3 y 4 (revisado el 2026-10-24).** Todas las tablas de esas fases llegan al curso:
+- `tasks` → `topics` → `blocks` → `courses`;
+- `submissions` → `tasks`;
+- `exams` tiene `course_id`;
+- los intentos y respuestas cuelgan del examen;
+- los comodines (`reward_rules`) tienen `course_id`.
+
+Basta con que en la 8a el **curso** se ligue a la institución (`courses.organization_id NULL`) para que tareas, entregas, exámenes y calificaciones queden dentro de ella sin tocar sus tablas.
+Propuesta mínima: no agregar nada a las tablas de las Fases 3 y 4. En la 8a, un cambio `database/changes/NNN_instituciones.sql` con:
+- `organizations`;
+- `organization_members` (usuario, rol en la institución);
+- `courses.organization_id`.
+
+Lo único a evitar desde ahora es consultar "todos los cursos" sin pasar por la Policy, para que el filtro por institución se agregue en un solo lugar.
 
 ## 7. Skills (auditadas el 2026-10-13, fijadas a un commit)
 
