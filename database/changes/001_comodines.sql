@@ -1,7 +1,11 @@
 -- 001 — Recompensas opcionales ("comodines"). PROPUESTA: no aplicada. La aplica el dueño a mano.
--- Diseño en docs/PLAN.md, sección 9. Se implementa al final de las Fases 3 y 4; los detalles
--- (topes, "omitir tarea") pueden cambiar con las respuestas a las preguntas abiertas de esas specs.
--- Probar en ambas bases: cursos_el_mai y cursos_el_mai_test.
+-- Diseño en docs/PLAN.md, sección 9; decisiones del dueño del 2026-10-24 en docs/specs/fase-3-*.md y fase-4-*.md.
+-- Probar en ambas bases: cursos_el_mai y cursos_el_mai_test (y en Railway cuando toque).
+
+-- Topes por curso, los define el ponente: comodines disponibles a la vez por alumno y concedidos en total por alumno.
+ALTER TABLE courses
+  ADD COLUMN reward_max_available TINYINT UNSIGNED NOT NULL DEFAULT 3 AFTER unlock_mode,
+  ADD COLUMN reward_max_granted   TINYINT UNSIGNED NOT NULL DEFAULT 5 AFTER reward_max_available;
 
 -- Reglas que configura el ponente por curso. Sin reglas activas, no existe nada visible para el alumno.
 CREATE TABLE reward_rules (
@@ -10,9 +14,6 @@ CREATE TABLE reward_rules (
   streak_length    TINYINT UNSIGNED NOT NULL,                -- N tareas calificadas consecutivas
   min_score_pct    DECIMAL(5,2) NOT NULL,                    -- X: nota mínima en % del máximo de cada tarea
   reward_kind      ENUM('skip_task','bonus_points','extra_exam_attempt','extension_24h') NOT NULL,
-  bonus_points     DECIMAL(5,2) NULL,                        -- solo bonus_points: puntos por comodín
-  max_per_student  TINYINT UNSIGNED NOT NULL DEFAULT 1,      -- tope de comodines de esta regla por alumno
-  max_per_course   SMALLINT UNSIGNED NULL,                   -- tope total en el curso (NULL = sin tope)
   is_active        TINYINT(1) NOT NULL DEFAULT 1,
   created_by       BIGINT UNSIGNED NOT NULL,
   created_at       DATETIME NULL,
@@ -22,8 +23,7 @@ CREATE TABLE reward_rules (
   CONSTRAINT fk_reward_rules_course  FOREIGN KEY (course_id)  REFERENCES courses (id) ON DELETE CASCADE,
   CONSTRAINT fk_reward_rules_creator FOREIGN KEY (created_by) REFERENCES users (id),
   CONSTRAINT chk_reward_rules_streak CHECK (streak_length BETWEEN 1 AND 50),
-  CONSTRAINT chk_reward_rules_pct    CHECK (min_score_pct BETWEEN 0 AND 100),
-  CONSTRAINT chk_reward_rules_bonus  CHECK ((reward_kind = 'bonus_points') = (bonus_points IS NOT NULL))
+  CONSTRAINT chk_reward_rules_pct    CHECK (min_score_pct BETWEEN 0 AND 100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Comodines concedidos. La racha que lo ganó termina en last_submission_id; la siguiente racha
@@ -37,6 +37,7 @@ CREATE TABLE reward_grants (
   granted_at         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   used_at            DATETIME NULL,
   used_task_id       BIGINT UNSIGNED NULL,                   -- skip_task, extension_24h, bonus_points
+  bonus_points       DECIMAL(5,2) NULL,                      -- bonus_points: lo aplicado (hasta 10 % del máximo, sin pasar del máximo)
   used_exam_id       BIGINT UNSIGNED NULL,                   -- extra_exam_attempt
   revoked_at         DATETIME NULL,
   revoked_by         BIGINT UNSIGNED NULL,

@@ -209,4 +209,12 @@ Idea del dueño. Se implementa al final de las Fases 3 y 4. Es **totalmente opci
 - **Alumno:** ve su saldo de comodines y cuándo puede usarlos. **Ponente:** puede revocar un comodín.
 - Toda concesión, uso y revocación queda en `audit_logs`. Sin rankings ni comparación entre alumnos.
 - **Esquema:** requiere tablas nuevas (`reward_rules`, `reward_grants`). Propuesta en `database/changes/001_comodines.sql`, **sin aplicar**; la aplica el dueño a mano.
-- Preguntas abiertas (en las specs de las Fases 3 y 4): qué significa "ayuda en el examen", si "omitir tarea" cuenta como 100 % o se excluye del promedio, y los topes.
+- **Decidido (2026-10-24):**
+  - "omitir tarea" se excluye del promedio;
+  - topes por curso: 3 disponibles y 5 concedidos por alumno, configurables;
+  - puntos extra hasta el 10 % del máximo de una tarea ya calificada;
+  - prórroga solo antes del vencimiento;
+  - la racha usa la primera entrega;
+  - "ayuda en el examen" = un intento extra con el examen abierto.
+
+  Detalle en `docs/specs/fase-3-*.md` y `fase-4-*.md`.
