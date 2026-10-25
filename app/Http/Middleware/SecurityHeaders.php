@@ -15,6 +15,8 @@ class SecurityHeaders
         $response->headers->set('X-Frame-Options', 'DENY');
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+        // Fase 5 (clase en vivo): habilitar cámara y micrófono solo para el dominio de la videollamada.
+        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
 
         // Solo en producción: en local el servidor de Vite sirve los assets desde otro puerto.
         // Fase 5: añadir el dominio de Jitsi/JaaS a frame-src.
