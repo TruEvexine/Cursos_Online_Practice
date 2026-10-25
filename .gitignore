@@ -66,10 +66,12 @@ docker-compose.override.yml
 # =====================================================================
 
 # Bases de datos locales y respaldos
-# (el esquema vive solo en esta máquina; los .sql no se suben)
-database/*.sql
-database/changes/
+# Se versionan solo el esquema y los cambios numerados (Railway los necesita);
+# 00_database_and_user.sql (marcador de clave) y cualquier volcado se quedan fuera.
 *.sql
+!database/schema.sql
+!database/changes/
+!database/changes/[0-9][0-9][0-9]_*.sql
 *.sqlite
 *.sqlite3
 *.db
