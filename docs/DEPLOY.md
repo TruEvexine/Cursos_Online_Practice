@@ -1,169 +1,187 @@
-# Despliegue en Railway
+# Despliegue en Render (plan gratis)
 
-Guía corta para publicar Gaining Grades en Railway, en un subdominio tuyo (p. ej. `gaining-grades.tudominio.com`).
-En producción la base es el **MySQL de Railway**; lo "local" de `CLAUDE.md` aplica al desarrollo.
-Las marcas **(sin comprobar)** son pasos que no pude probar desde aquí: revísalos en el panel.
+Guía para publicar Gaining Grades en Render, con MySQL en Aiven, archivos en Cloudflare R2 y correo con Resend. Todo en plan gratis.
 
-Revisado contra la documentación de Railway y de Railpack el 2026-10-24.
+Las marcas **(sin comprobar)** son pasos que no se probaron desde el repositorio: revísalos en el panel. El `Dockerfile` no se construyó aún (no hay Docker en la máquina de desarrollo).
 
-## Lo que ya hace el repositorio
+Límites de Render Free verificados el 2026-10-26 en <https://render.com/docs/free>.
 
-- **`start-container.sh`** reemplaza el arranque de Railpack para Laravel. Al iniciar:
-  - crea las carpetas de `storage/`;
-  - ejecuta `optimize:clear` y `optimize` (cachés de configuración, eventos, rutas y vistas);
-  - arranca FrankenPHP (Caddy).
-  - **Nunca migra.** Railpack migra por defecto; además se pone `RAILPACK_SKIP_MIGRATIONS=true` como segunda barrera.
-- **`composer.json`** declara las extensiones que usa la app, y Railpack las instala:
-  - `gd`: fotos de perfil a WebP;
-  - `intl`: tamaños de archivo;
-  - `fileinfo`: tipo real de las subidas;
-  - `mbstring`;
-  - `pdo_mysql`.
+## Antes de empezar: dónde va cada cosa
 
-  Las demás (`ctype`, `curl`, `dom`, `openssl`, `tokenizer`, `xml`…) ya vienen en la lista base de Railpack para Laravel.
-- **Producción sin correo real:** con `APP_ENV=production` y `MAIL_MAILER=log`, la app no arranca. Esto incluye `php artisan`.
-- **IP real del visitante:** se toma de `X-Forwarded-For` cuando `TRUSTED_PROXIES` está definido. Es la IP que usa el límite de intentos de login.
-- **Cabeceras de seguridad:** `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` y `X-Frame-Options`. En producción, además, la CSP y HSTS que ya existían desde la Fase 1.
+| Lugar | Qué va ahí | Se sube al repo |
+|---|---|---|
+| `.env` (tu máquina) | Configuración de **desarrollo** (tu MySQL local `cursos_el_mai`). No lo borres. | No |
+| Variables de Render (**Environment**) | Todo lo que usa la app **desplegada**: base, R2, Resend, `APP_KEY`, etc. | No |
+| `~/gg-prod.env` (tu máquina, fuera del repo) | Solo para correr `artisan` desde tu máquina contra producción (paso 5). | No |
+| `~/aiven-ca.pem` (tu máquina, fuera del repo) | Certificado de Aiven. Su contenido va a `DB_CA_CERT` en Render. | No |
 
-> Nota: Railpack sirve PHP con **FrankenPHP** (Caddy con PHP embebido), no con php-fpm. Para nosotros no cambia nada.
+El `.env` nunca llega a Render: `.dockerignore` lo excluye.
 
-## 1. Proyecto y servicio de la app
+## Qué implica el plan gratis
 
-1. En Railway: **New Project → Deploy from GitHub repo** y elige este repositorio y la rama que vayas a publicar.
-2. En el servicio, **Settings**:
-   - **Custom Build Command:** `npm run build`. Es lo que indica la guía de Laravel de Railway, para compilar CSS y JS. **(sin comprobar si Railpack ya lo hace solo)**
-   - **Pre-deploy Command:** `php artisan config:cache && php artisan route:cache && php artisan view:cache`
-     - El pre-deploy corre en **otro contenedor, sin el volumen**, y sus archivos **no se conservan**, así que no sirve para dejar cachés.
-     - Sirve como **revisión**: si la configuración está mal (p. ej. `MAIL_MAILER=log`), el despliegue se detiene antes de reemplazar la versión anterior.
-     - Las cachés reales las genera `start-container.sh` al arrancar.
-     - **No pongas `migrate` aquí.**
+- **Se duerme a los 15 min sin tráfico** y tarda cerca de 1 minuto en despertar. Para la demo, abre la app antes o usa un ping externo cada 5–10 min.
+- **El disco se borra** en cada reinicio o redespliegue. Por eso los archivos van a R2 y la sesión va en cookie cifrada.
+- **No hay MySQL en Render.** Se usa Aiven.
+- **No hay shell.** Los comandos de `artisan` se corren desde tu máquina (paso 5).
+- **Correo:** Render bloquea SMTP; el correo sale por la API de Resend.
+- Render puede reiniciar el servicio en cualquier momento.
 
-## 2. Base de datos MySQL
+## Orden
 
-1. **New → Database → MySQL** en el mismo proyecto.
-2. Activa temporalmente su acceso público (TCP proxy) para cargar el esquema desde tu máquina. Railway te muestra el host y el puerto públicos en la pestaña **Connect** o **Variables** del servicio MySQL.
-3. Carga el esquema como `root`, solo esta vez. La base de Railway suele llamarse `railway`; confírmalo en `MYSQLDATABASE`.
+1. Clave de la app (en tu máquina)
+2. Aiven (base de datos)
+3. Cloudflare R2 (archivos)
+4. Resend (correo)
+5. Blueprint en Render (aquí se pegan los valores de los pasos 1 a 4)
+6. Super admin y demo (desde tu máquina)
+7. Dominio propio (opcional)
+8. Respaldos
+
+## 1. Clave de la app
+
+```bash
+php artisan key:generate --show
+```
+
+Copia el resultado (empieza con `base64:`). Va a Render como `APP_KEY`.
+
+## 2. Base de datos en Aiven
+
+1. En aiven.io, crea cuenta y pulsa **Create service → MySQL → plan Free**. Elige una región cercana.
+2. En el servicio, **Overview → Connection information**, anota:
+   - **Host** → `DB_HOST`
+   - **Port** → `DB_PORT`
+   - **Database** → `DB_DATABASE` (será `defaultdb`)
+   - **User** → `avnadmin` (solo para cargar el esquema)
+3. En la misma pantalla, **CA certificate → Download**. Guárdalo como `~/aiven-ca.pem`.
+4. Carga el esquema desde la carpeta del proyecto. Pedirá la clave de `avnadmin`:
    ```bash
-   mysql -h <host-publico> -P <puerto> -u root -p railway < database/schema.sql
+   cd ~/IdeaProjects/Cursos_Online_Practice
+   mysql --ssl-ca=$HOME/aiven-ca.pem -h <host> -P <puerto> -u avnadmin -p defaultdb < database/schema.sql
+   mysql --ssl-ca=$HOME/aiven-ca.pem -h <host> -P <puerto> -u avnadmin -p defaultdb < database/changes/002_catalogo.sql
    ```
-4. Crea el usuario de la aplicación **sin permisos de DDL**. Usa una clave larga y aleatoria; no la guardes en el repo.
+   Antes, revisa si `schema.sql` ya incluye el cambio 001: `grep -n -i comodin database/schema.sql`. Si no aparece, carga también `database/changes/001_comodines.sql`. **(sin comprobar)**
+5. Crea el usuario de la app. Elige tú una clave larga y aleatoria, y ejecuta en la consola SQL de Aiven o con `mysql`:
    ```sql
    CREATE USER 'cursos_app'@'%' IDENTIFIED BY '<clave-larga>';
-   GRANT SELECT, INSERT, UPDATE, DELETE ON railway.* TO 'cursos_app'@'%';
+   GRANT SELECT, INSERT, UPDATE, DELETE ON defaultdb.* TO 'cursos_app'@'%';
    ```
-5. Si no lo necesitas para respaldos, vuelve a quitar el acceso público.
+   **(sin comprobar que Aiven deje crear usuarios desde `avnadmin`)**
 
-## 3. Variables del servicio de la app
+| Variable en Render | Valor |
+|---|---|
+| `DB_HOST` | Host de Aiven |
+| `DB_PORT` | Puerto de Aiven |
+| `DB_DATABASE` | `defaultdb` |
+| `DB_USERNAME` | `cursos_app` (ya viene en el Blueprint) |
+| `DB_PASSWORD` | La clave de `cursos_app` |
+| `DB_CA_CERT` | Todo el contenido de `~/aiven-ca.pem`, con las líneas `BEGIN` y `END` **(sin comprobar que Render acepte saltos de línea)** |
 
-Copia `docs/railway-variables.example` en **Variables** (el "Raw Editor" acepta el archivo) y completa:
+## 3. Archivos en Cloudflare R2
 
-- `APP_KEY`: genérala en tu máquina con `php artisan key:generate --show`.
-- `APP_URL`: tu subdominio con `https://`.
-- `DB_*`: usa las variables de referencia del servicio MySQL (`${{MySQL.MYSQLHOST}}`…). `DB_USERNAME=cursos_app` y su clave.
-  **(sin comprobar: confirma en el servicio MySQL el nombre exacto del servicio y de sus variables)**
-- `TRUSTED_PROXIES=*`: solo si la app **no** tiene TCP proxy ni otro acceso directo. Así la única forma de llegar es el proxy HTTP de Railway, y nadie puede falsificar `X-Forwarded-For`.
-- `MAIL_*`: ver el paso 6.
-- `SITE_CONTACT_EMAIL` y `SITE_WHATSAPP`.
-- `RAILPACK_SKIP_MIGRATIONS=true`.
-- `CADDY_SERVER_EXTRA_DIRECTIVES="request_body { max_size 12MB }"`:
-  - el `php.ini` de Railpack trae `upload_max_filesize = 0` y `post_max_size = 0` (sin límite);
-  - la app valida 10 MB, pero sin este tope cualquiera podría mandar envíos enormes.
+1. En dash.cloudflare.com, **R2 → Create bucket**: `gaining-grades`, sin acceso público. **(sin comprobar si pide tarjeta)**
+2. **R2 → Manage API tokens → Create API token**, con permiso **Object Read & Write** solo sobre ese bucket. Copia el *Access Key ID* y el *Secret Access Key*; se muestran una sola vez.
+3. Copia la URL del endpoint S3: `https://<id-de-cuenta>.r2.cloudflarestorage.com`.
 
-  **(sin comprobar en un despliegue real)**
+| Variable en Render | Valor |
+|---|---|
+| `AWS_BUCKET` | `gaining-grades` |
+| `AWS_ENDPOINT` | La URL del endpoint |
+| `AWS_ACCESS_KEY_ID` | El Access Key ID |
+| `AWS_SECRET_ACCESS_KEY` | El Secret |
 
-## 4. Volumen (subidas y sesiones)
+`AWS_DEFAULT_REGION=auto` y `AWS_USE_PATH_STYLE_ENDPOINT=true` ya vienen en el Blueprint.
 
-- **Mount path:** `/app/storage`. Ahí viven:
-  - los materiales y fotos (`storage/app/private`);
-  - las sesiones (`storage/framework/sessions`);
-  - la caché de archivos.
+## 4. Correo con Resend
 
-  Los logs van a `stderr` (`LOG_CHANNEL=stderr`).
-- La primera vez el volumen llega vacío; `start-container.sh` crea las carpetas.
-- **Límites de Railway:**
-  - un volumen por servicio;
-  - **sin réplicas** con volumen;
-  - cada redespliegue tiene una pausa breve porque el volumen no se comparte entre dos despliegues.
-- Si aparecen errores de permisos, agrega la variable `RAILWAY_RUN_UID=0`, como indica Railway para imágenes que no corren como root. **(sin comprobar)**
+1. En resend.com, **Domains → Add Domain** con `correo.<tu-dominio>`. Resend recomienda un subdominio.
+2. En **Cloudflare → DNS**, crea los registros que Resend muestra (MX, SPF y DKIM), todos en **DNS only**. Usa los valores exactos de Resend; la verificación puede tardar hasta 72 h.
+3. **API Keys → Create API Key** con permiso de envío.
 
-## 5. Dominio propio (subdominio)
+| Variable en Render | Valor |
+|---|---|
+| `RESEND_API_KEY` | La llave de Resend |
+| `MAIL_FROM_ADDRESS` | `no-responder@correo.<tu-dominio>` (del dominio verificado) |
 
-1. En el servicio de la app: **Settings → Public Networking → + Custom Domain** y escribe `gaining-grades.tudominio.com`.
-2. Railway te muestra **dos registros, y los dos son obligatorios**: un `CNAME` hacia un destino `*.up.railway.app` y un `TXT` de verificación. Créalos **exactamente** como aparecen.
-   - Sin el TXT, el dominio responde 404 aunque el CNAME ya resuelva.
-3. El certificado (Let's Encrypt) se emite solo, normalmente en menos de una hora. Los cambios de DNS pueden tardar hasta 72 h.
-4. **Si tu DNS está en Cloudflare:**
-   - Railway pide **proxy activado** y SSL/TLS en **Full**, no Full (Strict).
-   - Con el proxy de Cloudflare, `X-Forwarded-For` trae la IP de Cloudflare en lugar de la del visitante, y el límite de intentos de login se compartiría entre todos.
-   - Para este subdominio conviene **DNS only (nube gris)**, si Railway lo acepta en tu caso. **(sin comprobar)**
+Hasta que el dominio esté verificado, la app arranca pero los correos no salen.
 
-## 6. Correo transaccional con Resend (API HTTPS)
+## 5. Blueprint en Render
 
-Railway bloquea el SMTP saliente en Free, Trial y Hobby, así que la app envía por la **API de Resend** (paquete `resend/resend-php`, que usa el transporte `resend` de Laravel).
+1. Haz commit y push de la rama que vayas a publicar. El repo necesita `Dockerfile`, `render.yaml` y `start-container.sh`.
+2. En dashboard.render.com, **New → Blueprint**. Conecta GitHub, elige el repositorio y la rama. Render lee `render.yaml`.
+3. Te pedirá las variables sin valor. Llénalas:
 
-1. En [resend.com](https://resend.com): **Domains → Add Domain**. Resend recomienda enviar desde un **subdominio**, p. ej. `correo.<tu dominio>`. En los registros de abajo, `send` y `resend._domainkey` llevan entonces el sufijo del subdominio.
-2. En **Cloudflare → DNS**, crea los registros que Resend muestra en la página del dominio (copia los valores de ahí; los de abajo son la forma, no los valores exactos):
+   | Variable | Dónde se obtiene |
+   |---|---|
+   | `APP_KEY` | Paso 1 |
+   | `APP_URL` | `https://gaining-grades.onrender.com`. Si Render asigna otro nombre, cámbialo en **Environment** y redespliega |
+   | `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_PASSWORD`, `DB_CA_CERT` | Paso 2 |
+   | `AWS_BUCKET`, `AWS_ENDPOINT`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Paso 3 |
+   | `RESEND_API_KEY`, `MAIL_FROM_ADDRESS` | Paso 4 |
+   | `SITE_CONTACT_EMAIL`, `SITE_WHATSAPP` | Tus datos de contacto |
 
-   | Tipo | Nombre | Contenido | Prioridad | Proxy |
-   |---|---|---|---|---|
-   | MX | `send` | `feedback-smtp.<región>.amazonses.com` (el que te dé Resend) | 10 | DNS only |
-   | TXT | `send` | `"v=spf1 include:amazonses.com ~all"` (SPF) | — | DNS only |
-   | TXT | `resend._domainkey` | `p=…` (DKIM, la llave que te dé Resend) | — | DNS only |
-   | TXT | `_dmarc` | `v=DMARC1; p=none;` (recomendado; empieza en `none`) | — | DNS only |
+   Si Render no te deja crear el Blueprint, crea un **Web Service → Docker** a mano, plan Free, **Health Check Path** `/up`, y pega las variables de `render.yaml`.
+4. Pulsa **Apply**. El primer build tarda varios minutos. Sigue la pestaña **Logs**. Si falla, lo más probable es la ruta del Caddyfile (el script prueba `/etc/frankenphp/Caddyfile` y luego `/etc/caddy/Caddyfile`) o la imagen `dunglas/frankenphp`.
+5. Cuando esté **Live**, abre `https://<tu-url>/up`. Debe responder 200.
 
-   - Escribe solo el nombre corto (`send`, no `send.tudominio.com`). Cloudflare completa el dominio.
-   - Si la prioridad 10 ya está ocupada, usa 20 o 30.
-   - Resend tiene un botón **"Sign in to Cloudflare"** que crea los registros solo.
-   - La verificación puede tardar hasta 72 h (normalmente mucho menos).
-3. Crea una **API key** en Resend con permiso de envío.
-4. Variables en Railway:
-   - `MAIL_MAILER=resend`
-   - `RESEND_API_KEY=<la llave>`
-   - `MAIL_FROM_ADDRESS=no-responder@correo.<tu dominio>` (del dominio verificado)
-   - `MAIL_FROM_NAME="Gaining Grades"`
+Cada cambio en **Environment** redespliega el servicio solo.
 
-Con `MAIL_MAILER=log` la app no arranca en producción (a propósito).
+## 6. Super admin y demo (desde tu máquina)
 
-## 7. Crear el super admin en producción
+Crea `~/gg-prod.env` **fuera del repo**. Son los mismos valores de producción, para que `artisan` apunte a Aiven y R2:
 
-Con el servicio ya arriba, abre una terminal en el contenedor con la CLI de Railway y ejecuta el comando interactivo. Pide correo y clave; no quedan en ningún archivo.
 ```bash
-railway ssh            # desde la carpeta del proyecto, ya enlazada con `railway link`
+APP_ENV=production
+APP_KEY=<la misma de Render>
+DB_CONNECTION=mysql
+DB_HOST=<host de Aiven>
+DB_PORT=<puerto>
+DB_DATABASE=defaultdb
+DB_USERNAME=cursos_app
+DB_PASSWORD=<clave de cursos_app>
+MYSQL_ATTR_SSL_CA=/home/<tu-usuario>/aiven-ca.pem
+AWS_BUCKET=gaining-grades
+AWS_ENDPOINT=<endpoint de R2>
+AWS_ACCESS_KEY_ID=<de R2>
+AWS_SECRET_ACCESS_KEY=<de R2>
+AWS_DEFAULT_REGION=auto
+AWS_USE_PATH_STYLE_ENDPOINT=true
+MAIL_MAILER=resend
+RESEND_API_KEY=<de Resend>
+MAIL_FROM_ADDRESS=no-responder@correo.<tu-dominio>
+```
+
+Luego, en tu terminal:
+
+```bash
+cd ~/IdeaProjects/Cursos_Online_Practice
+set -a; . ~/gg-prod.env; set +a
 php artisan app:create-super-admin
 ```
-**(sin comprobar: el nombre y las opciones de `railway ssh` en tu versión de la CLI)**
 
-## 7b. Datos de la DEMO
+Te pedirá correo y clave; no quedan en ningún archivo.
 
-1. Variables:
-   - `DEMO_MODE=true`;
-   - `DEMO_PASSWORD=<una clave>` (no hay valor por defecto);
-   - `DEMO_EMAIL_BASE=<tu correo>`.
+**Demo** (opcional): agrega a `~/gg-prod.env` `DEMO_MODE=true`, `DEMO_PASSWORD=<una clave>` y `DEMO_EMAIL_BASE=<tu correo>`, y ejecuta `php artisan app:seed-demo`. Es idempotente; con `--reset` recrea los tres cursos demo. Las cuentas usan plus-addressing (`tu+gg-alumno01@…`), así que las invitaciones te llegan a ti. Al terminar, pon `DEMO_MODE=false` en Render y borra `DEMO_*` de `~/gg-prod.env`.
 
-   Las cuentas usan plus-addressing (`tu+gg-alumno01@…`), así que las invitaciones y verificaciones te llegan a ti.
-2. Aplica antes `database/changes/002_catalogo.sql`, para que los cursos aparezcan en el catálogo. Sin él, se siembran pero sin precio.
-3. `php artisan app:seed-demo`:
-   - es idempotente;
-   - con `--reset`, borra y recrea los tres cursos demo.
+## 7. Dominio propio (opcional)
 
-   Nunca crea ni cambia al super admin.
-4. Para el registro abierto: `SITE_OPEN_REGISTRATION=true`.
-5. Al terminar la demostración: `DEMO_MODE=false`.
+1. En el servicio, **Settings → Custom Domains → Add** y escribe `gaining-grades.tudominio.com`.
+2. Crea en Cloudflare el `CNAME` que muestra Render, en **DNS only (nube gris)**. **(sin comprobar si el plan gratis pide pasos extra)**
+3. El certificado se emite solo. Cambia `APP_URL` en Render y redespliega.
+4. Con el proxy de Cloudflare activado, `X-Forwarded-For` traería la IP de Cloudflare y el límite de login se compartiría entre todos: déjalo en DNS only.
 
-## 8. Respaldo manual antes de cada despliegue
+## 8. Respaldos
 
-Con el acceso público de MySQL activo, guarda el respaldo **fuera del repositorio** (los `.sql` están ignorados, pero no los dejes en la carpeta del proyecto):
-```bash
-mysqldump -h <host-publico> -P <puerto> -u root -p --single-transaction --no-tablespaces railway > ~/respaldos/gg-$(date +%F).sql
-```
-Los archivos subidos viven en el volumen: Railway ofrece respaldos manuales y automáticos de volúmenes. Actívalos.
+- **Base:** antes de cada cambio de esquema, guarda un volcado fuera del repo:
+  ```bash
+  mysqldump --ssl-ca=$HOME/aiven-ca.pem -h <host> -P <puerto> -u avnadmin -p --single-transaction --no-tablespaces defaultdb > ~/respaldos/gg-$(date +%F).sql
+  ```
+- **Archivos:** viven en R2, que no hace respaldo propio. Para una copia, `rclone sync` hacia tu máquina.
 
 ## 9. Costos a vigilar
 
-En Railway se paga por uso: CPU y memoria de la app y del MySQL, GB del volumen y tráfico de salida, sobre la cuota del plan.
-No anoto cifras porque cambian; revisa la página de precios de Railway y pon un **límite de gasto** en la configuración del proyecto.
-También el plan del proveedor de correo.
+Todo cabe en planes gratis, con límites: 750 horas de instancia, ancho de banda y minutos de build de Render (si se agotan sin tarjeta, el servicio se suspende o los builds se desactivan), 1 GB en Aiven, 10 GB en R2 y el plan de Resend. No anoto cifras porque cambian; revisa las páginas de precios.
 
 ## 10. Cuando cambie el esquema
 
-Los cambios llegan como `database/changes/NNN_*.sql`. Se aplican **a mano**, con respaldo previo, conectándote como `root` igual que en el paso 2. La app nunca migra.
+Los cambios llegan como `database/changes/NNN_*.sql`. Se aplican **a mano**, con respaldo previo, conectándote como `avnadmin` igual que en el paso 2. La app nunca migra.

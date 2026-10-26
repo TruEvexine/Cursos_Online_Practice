@@ -1,0 +1,17 @@
+.git
+.idea
+.claude
+.env
+.env.*
+!.env.example
+node_modules
+vendor
+public/build
+storage/logs/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/cache/data/*
+tests
+docs
+*.sql
+!database/schema.sql

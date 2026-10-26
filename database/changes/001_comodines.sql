@@ -1,6 +1,6 @@
 -- 001 — Recompensas opcionales ("comodines"). PROPUESTA: no aplicada. La aplica el dueño a mano.
 -- Diseño en docs/PLAN.md, sección 9; decisiones del dueño del 2026-10-24 en docs/specs/fase-3-*.md y fase-4-*.md.
--- Probar en ambas bases: cursos_el_mai y cursos_el_mai_test (y en Railway cuando toque).
+-- Probar en ambas bases: cursos_el_mai y cursos_el_mai_test (y en producción cuando toque).
 
 -- Topes por curso, los define el ponente: comodines disponibles a la vez por alumno y concedidos en total por alumno.
 ALTER TABLE courses

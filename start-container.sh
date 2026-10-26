@@ -1,12 +1,21 @@
 #!/bin/bash
-# Arranque en Railway (Railpack usa este archivo en lugar del suyo; ver docs/DEPLOY.md).
-# Igual que el de Railpack para Laravel, pero NUNCA migra: el esquema se carga a mano con database/schema.sql.
+# Arranque en Render (ver docs/DEPLOY.md). NUNCA migra: el esquema se carga a mano con database/schema.sql.
 set -e
 
-# El volumen se monta vacío en /app/storage la primera vez: crea las carpetas que Laravel necesita.
-mkdir -p storage/app/private storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
+# Render dice en qué puerto escuchar; Caddy sirve HTTP plano (Render pone el HTTPS delante).
+export SERVER_NAME=":${PORT:-10000}"
+
+# Aiven (y otros MySQL gestionados) exigen TLS: el certificado de la CA llega como variable.
+if [ -n "$DB_CA_CERT" ]; then
+    printf '%s\n' "$DB_CA_CERT" > /tmp/db-ca.pem
+    export MYSQL_ATTR_SSL_CA=/tmp/db-ca.pem
+fi
+
+mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
 
 php artisan optimize:clear
 php artisan optimize
 
-exec docker-php-entrypoint --config /Caddyfile --adapter caddyfile 2>&1
+CADDYFILE=/etc/frankenphp/Caddyfile
+[ -f "$CADDYFILE" ] || CADDYFILE=/etc/caddy/Caddyfile
+exec docker-php-entrypoint frankenphp run --config "$CADDYFILE" --adapter caddyfile

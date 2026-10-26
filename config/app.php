@@ -68,9 +68,9 @@ return [
     'timezone' => 'UTC',
 
     /*
-    | Proxies de confianza (Railway): '*' o una lista separada por comas. Vacío = ninguno.
-    | '*' solo es seguro si el servidor SOLO es alcanzable a través del proxy de Railway
-    | (sin TCP proxy ni puertos públicos directos): si no, cualquiera falsifica X-Forwarded-For.
+    | Proxies de confianza (Render): '*' o una lista separada por comas. Vacío = ninguno.
+    | '*' solo es seguro si el servidor SOLO es alcanzable a través del proxy de Render
+    | (sin puertos públicos directos): si no, cualquiera falsifica X-Forwarded-For.
     */
     'trusted_proxies' => env('TRUSTED_PROXIES'),
 

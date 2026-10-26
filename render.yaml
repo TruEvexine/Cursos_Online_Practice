@@ -1,0 +1,49 @@
+# Blueprint de Render (plan gratis). Guía: docs/DEPLOY.md. Los valores con sync: false se piden en el panel.
+services:
+  - type: web
+    name: gaining-grades
+    runtime: docker
+    plan: free
+    healthCheckPath: /up
+    envVars:
+      - { key: APP_NAME, value: Gaining Grades }
+      - { key: APP_ENV, value: production }
+      - { key: APP_DEBUG, value: "false" }
+      - { key: APP_LOCALE, value: es }
+      - { key: APP_FALLBACK_LOCALE, value: es }
+      - { key: APP_KEY, sync: false }
+      - { key: APP_URL, sync: false }
+      # '*' solo es seguro si nadie llega a la app sin pasar por el proxy de Render (plan gratis: así es).
+      - { key: TRUSTED_PROXIES, value: "*" }
+      - { key: LOG_CHANNEL, value: stderr }
+      - { key: LOG_LEVEL, value: warning }
+      # MySQL externo (Aiven) con el usuario de la app, sin DDL.
+      - { key: DB_CONNECTION, value: mysql }
+      - { key: DB_HOST, sync: false }
+      - { key: DB_PORT, sync: false }
+      - { key: DB_DATABASE, sync: false }
+      - { key: DB_USERNAME, value: cursos_app }
+      - { key: DB_PASSWORD, sync: false }
+      - { key: DB_CA_CERT, sync: false }
+      # Disco efímero: la sesión va en cookie cifrada y los archivos en un bucket S3/R2.
+      - { key: SESSION_DRIVER, value: cookie }
+      - { key: SESSION_ENCRYPT, value: "true" }
+      - { key: SESSION_LIFETIME, value: "120" }
+      - { key: SESSION_SECURE_COOKIE, value: "true" }
+      - { key: SESSION_SAME_SITE, value: lax }
+      - { key: CACHE_STORE, value: file }
+      - { key: QUEUE_CONNECTION, value: sync }
+      - { key: AWS_BUCKET, sync: false }
+      - { key: AWS_ENDPOINT, sync: false }
+      - { key: AWS_ACCESS_KEY_ID, sync: false }
+      - { key: AWS_SECRET_ACCESS_KEY, sync: false }
+      - { key: AWS_DEFAULT_REGION, value: auto }
+      - { key: AWS_USE_PATH_STYLE_ENDPOINT, value: "true" }
+      # Render bloquea SMTP en el plan gratis: correo por la API HTTPS de Resend.
+      - { key: MAIL_MAILER, value: resend }
+      - { key: RESEND_API_KEY, sync: false }
+      - { key: MAIL_FROM_ADDRESS, sync: false }
+      - { key: MAIL_FROM_NAME, value: Gaining Grades }
+      - { key: SITE_CONTACT_EMAIL, sync: false }
+      - { key: SITE_WHATSAPP, sync: false }
+      - { key: SITE_OPEN_REGISTRATION, value: "true" }
