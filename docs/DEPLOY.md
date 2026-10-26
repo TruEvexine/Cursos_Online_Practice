@@ -1,6 +1,6 @@
 # Despliegue en Railway
 
-Guía corta para publicar Gaining Grades en Railway, en un subdominio tuyo (p. ej. `cursos.tudominio.com`).
+Guía corta para publicar Gaining Grades en Railway, en un subdominio tuyo (p. ej. `gaining-grades.tudominio.com`).
 En producción la base es el **MySQL de Railway**; lo "local" de `CLAUDE.md` aplica al desarrollo.
 Las marcas **(sin comprobar)** son pasos que no pude probar desde aquí: revísalos en el panel.
 
@@ -88,7 +88,7 @@ Copia `docs/railway-variables.example` en **Variables** (el "Raw Editor" acepta 
 
 ## 5. Dominio propio (subdominio)
 
-1. En el servicio de la app: **Settings → Public Networking → + Custom Domain** y escribe `cursos.tudominio.com`.
+1. En el servicio de la app: **Settings → Public Networking → + Custom Domain** y escribe `gaining-grades.tudominio.com`.
 2. Railway te muestra **dos registros, y los dos son obligatorios**: un `CNAME` hacia un destino `*.up.railway.app` y un `TXT` de verificación. Créalos **exactamente** como aparecen.
    - Sin el TXT, el dominio responde 404 aunque el CNAME ya resuelva.
 3. El certificado (Let's Encrypt) se emite solo, normalmente en menos de una hora. Los cambios de DNS pueden tardar hasta 72 h.
@@ -97,13 +97,32 @@ Copia `docs/railway-variables.example` en **Variables** (el "Raw Editor" acepta 
    - Con el proxy de Cloudflare, `X-Forwarded-For` trae la IP de Cloudflare en lugar de la del visitante, y el límite de intentos de login se compartiría entre todos.
    - Para este subdominio conviene **DNS only (nube gris)**, si Railway lo acepta en tu caso. **(sin comprobar)**
 
-## 6. Correo transaccional (SPF y DKIM)
+## 6. Correo transaccional con Resend (API HTTPS)
 
-- **SMTP saliente bloqueado:** Railway lo bloquea en los planes **Free, Trial y Hobby**; solo el plan **Pro** permite SMTP.
-- En los demás planes hay que usar la **API HTTPS** de un proveedor (Resend, Postmark, Mailgun, SES…).
-- Laravel trae los transportes, pero algunos requieren un paquete de Composer (p. ej. `resend/resend-php` o `symfony/postmark-mailer`).
-- **Decisión pendiente:** qué proveedor y qué plan. Si eliges una API, te pido permiso antes de agregar el paquete.
-- **Registros DNS de correo:** en el proveedor, verifica el dominio de `MAIL_FROM_ADDRESS` agregando en tu DNS los registros **SPF** (TXT) y **DKIM** (TXT o CNAME) que te dé. Agrega también un **DMARC** (`_dmarc`, TXT) aunque sea en modo `p=none` al principio. Sin SPF y DKIM, las invitaciones caerán en spam.
+Railway bloquea el SMTP saliente en Free, Trial y Hobby, así que la app envía por la **API de Resend** (paquete `resend/resend-php`, que usa el transporte `resend` de Laravel).
+
+1. En [resend.com](https://resend.com): **Domains → Add Domain**. Resend recomienda enviar desde un **subdominio**, p. ej. `correo.<tu dominio>`. En los registros de abajo, `send` y `resend._domainkey` llevan entonces el sufijo del subdominio.
+2. En **Cloudflare → DNS**, crea los registros que Resend muestra en la página del dominio (copia los valores de ahí; los de abajo son la forma, no los valores exactos):
+
+   | Tipo | Nombre | Contenido | Prioridad | Proxy |
+   |---|---|---|---|---|
+   | MX | `send` | `feedback-smtp.<región>.amazonses.com` (el que te dé Resend) | 10 | DNS only |
+   | TXT | `send` | `"v=spf1 include:amazonses.com ~all"` (SPF) | — | DNS only |
+   | TXT | `resend._domainkey` | `p=…` (DKIM, la llave que te dé Resend) | — | DNS only |
+   | TXT | `_dmarc` | `v=DMARC1; p=none;` (recomendado; empieza en `none`) | — | DNS only |
+
+   - Escribe solo el nombre corto (`send`, no `send.tudominio.com`). Cloudflare completa el dominio.
+   - Si la prioridad 10 ya está ocupada, usa 20 o 30.
+   - Resend tiene un botón **"Sign in to Cloudflare"** que crea los registros solo.
+   - La verificación puede tardar hasta 72 h (normalmente mucho menos).
+3. Crea una **API key** en Resend con permiso de envío.
+4. Variables en Railway:
+   - `MAIL_MAILER=resend`
+   - `RESEND_API_KEY=<la llave>`
+   - `MAIL_FROM_ADDRESS=no-responder@correo.<tu dominio>` (del dominio verificado)
+   - `MAIL_FROM_NAME="Gaining Grades"`
+
+Con `MAIL_MAILER=log` la app no arranca en producción (a propósito).
 
 ## 7. Crear el super admin en producción
 

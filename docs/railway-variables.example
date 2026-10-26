@@ -6,7 +6,7 @@ APP_ENV=production
 # php artisan key:generate --show (en tu máquina) y pega el valor
 APP_KEY=
 APP_DEBUG=false
-APP_URL=https://cursos.tudominio.com
+APP_URL=https://gaining-grades.tudominio.com
 APP_LOCALE=es
 APP_FALLBACK_LOCALE=es
 
@@ -33,16 +33,11 @@ CACHE_STORE=file
 QUEUE_CONNECTION=sync
 FILESYSTEM_DISK=local
 
-# Correo transaccional. MAIL_MAILER=log hace que la app no arranque en producción.
-# En los planes Free/Trial/Hobby de Railway el SMTP saliente está bloqueado: usa la API HTTPS del proveedor
-# (Laravel trae transportes para postmark, resend, mailgun y ses; algunos requieren un paquete: pregunta antes).
-MAIL_MAILER=smtp
-MAIL_SCHEME=null
-MAIL_HOST=smtp.proveedor.com
-MAIL_PORT=587
-MAIL_USERNAME=
-MAIL_PASSWORD=
-MAIL_FROM_ADDRESS=no-responder@tudominio.com
+# Correo transaccional por la API HTTPS de Resend (Railway bloquea SMTP en Free/Trial/Hobby).
+# MAIL_MAILER=log hace que la app no arranque en producción.
+MAIL_MAILER=resend
+RESEND_API_KEY=
+MAIL_FROM_ADDRESS=no-responder@correo.tudominio.com
 MAIL_FROM_NAME="Gaining Grades"
 
 SITE_CONTACT_EMAIL=contacto@tudominio.com
