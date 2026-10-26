@@ -59,10 +59,12 @@ class FortifyServiceProvider extends ServiceProvider
 
         // Fortify no limita estas rutas: evita usar la app para inundar buzones o probar tokens en masa.
         RateLimiter::for('password-reset', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
+        // Registro abierto: pocas cuentas por IP y hora (cada una envía un correo de verificación).
+        RateLimiter::for('register', fn (Request $request) => Limit::perHour(config('site.register_per_hour'))->by($request->ip()));
         $this->app->booted(function () {
             Route::getRoutes()->refreshNameLookups();
-            foreach (['password.email', 'password.update'] as $name) {
-                Route::getRoutes()->getByName($name)?->middleware('throttle:password-reset');
+            foreach (['password.email' => 'password-reset', 'password.update' => 'password-reset', 'register.store' => 'register'] as $name => $limiter) {
+                Route::getRoutes()->getByName($name)?->middleware("throttle:$limiter");
             }
         });
     }

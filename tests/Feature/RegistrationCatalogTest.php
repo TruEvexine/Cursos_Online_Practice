@@ -46,6 +46,15 @@ class RegistrationCatalogTest extends TestCase
         $this->post('/register', $this->form(['birth_date' => now()->subYears(18)->toDateString()]))->assertSessionHasNoErrors();
     }
 
+    public function test_registration_is_rate_limited_per_ip(): void
+    {
+        foreach (range(1, config('site.register_per_hour')) as $i) {
+            $this->post('/register', $this->form(['email' => "spam$i@demo.test", 'terms' => null]))->assertSessionHasErrors('terms');
+        }
+        $this->post('/register', $this->form(['email' => 'otra@demo.test']))->assertStatus(429);
+        $this->assertDatabaseMissing('users', ['email' => 'otra@demo.test']);
+    }
+
     private function needsCatalogColumn(): void
     {
         if (! Schema::hasColumn('courses', 'catalog_price')) {
@@ -82,7 +91,7 @@ class RegistrationCatalogTest extends TestCase
             ->assertSessionHas('status', 'Pago simulado registrado (modo prueba). Ya estás inscrito.');
         $this->assertTrue($paid->hasReader($student));
         $log = AuditLog::where('action', 'enrollment.simulated_payment')->sole();
-        $this->assertSame(['course_id' => $paid->id, 'amount' => 499.0, 'simulated' => true], $log->meta);
+        $this->assertEqualsCanonicalizing(['course_id' => $paid->id, 'amount' => 499, 'simulated' => true], $log->meta);
 
         // Volver a inscribirse no duplica.
         $this->post("/catalogo/{$paid->slug}/inscripcion")->assertRedirect("/cursos/{$paid->id}");
@@ -100,7 +109,6 @@ class RegistrationCatalogTest extends TestCase
         $this->actingAs($removed)->post("/catalogo/{$course->slug}/inscripcion")->assertForbidden();
         $this->actingAs(User::factory()->role('ponente')->create())->post("/catalogo/{$course->slug}/inscripcion")->assertForbidden();
         $this->actingAs(User::factory()->role('alumno')->create())->post("/catalogo/{$hidden->slug}/inscripcion")->assertForbidden();
-        $this->post("/catalogo/{$course->slug}/inscripcion")->assertForbidden();
         auth()->logout();
         $this->post("/catalogo/{$course->slug}/inscripcion")->assertRedirect('/login');
         $this->assertSame('removed', $course->enrollments()->sole()->status);

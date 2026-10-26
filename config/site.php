@@ -9,6 +9,7 @@ return [
     // Registro abierto: versión de términos y aviso que se acepta (queda en audit_logs).
     'open_registration' => (bool) env('SITE_OPEN_REGISTRATION', false),
     'terms_version' => '2026-10-provisional',
+    'register_per_hour' => 5, // intentos de registro por IP y hora
 
     // DEMO (php artisan app:seed-demo): solo con DEMO_MODE=true; sin contraseña por defecto.
     'demo' => [
