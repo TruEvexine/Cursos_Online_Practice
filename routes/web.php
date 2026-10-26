@@ -7,6 +7,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/temas/{topic}/editar', [TopicController::class, 'edit'])->name('topics.edit');
     Route::put('/temas/{topic}', [TopicController::class, 'update'])->name('topics.update');
     Route::delete('/temas/{topic}', [TopicController::class, 'destroy'])->name('topics.destroy');
+
+    Route::get('/temas/{topic}/tareas/crear', [TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/temas/{topic}/tareas', [TaskController::class, 'store'])->name('tasks.store');
+    Route::get('/tareas/{task}/editar', [TaskController::class, 'edit'])->name('tasks.edit');
+    Route::put('/tareas/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tareas/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     Route::get('/cursos/{course}/materiales', [MaterialController::class, 'index'])->name('materials.index');
     Route::post('/cursos/{course}/materiales', [MaterialController::class, 'store'])->name('materials.store');

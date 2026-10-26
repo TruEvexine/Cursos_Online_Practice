@@ -37,6 +37,27 @@
     </form>
 
     @if ($editing)
+        <section aria-labelledby="tareas" class="mt-8 max-w-3xl rounded-card border border-line bg-surface p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <h2 id="tareas" class="font-serif text-xl font-semibold">Tareas de este tema</h2>
+                <a href="{{ route('tasks.create', $topic) }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline">Nueva tarea</a>
+            </div>
+            @forelse ($topic->tasks as $task)
+                <div class="mt-3 flex flex-wrap items-center justify-between gap-x-4 rounded-field bg-sunken px-4 py-2">
+                    <div class="min-w-0">
+                        <p class="font-semibold [overflow-wrap:anywhere]">{{ $task->title }} @unless ($task->is_required)<span class="text-sm font-normal text-muted">(opcional)</span>@endunless</p>
+                        <p class="text-sm text-muted">
+                            {{ $task->due_at ? 'Vence el '.$task->due_at->timezone('America/Mexico_City')->isoFormat('D MMM YYYY, H:mm') : 'Sin fecha límite' }}
+                            · máx. {{ $task->max_score + 0 }} · peso {{ $task->weight + 0 }}
+                        </p>
+                    </div>
+                    <a href="{{ route('tasks.edit', $task) }}" class="inline-flex min-h-11 shrink-0 items-center font-semibold text-primary underline">Editar<span class="sr-only"> «{{ $task->title }}»</span></a>
+                </div>
+            @empty
+                <p class="mt-2 text-muted">Este tema no tiene tareas. Sin tareas, el tema se completa al marcarlo como visto.</p>
+            @endforelse
+        </section>
+
         <details class="mt-8 max-w-3xl rounded-card border border-line bg-surface p-6">
             <summary class="flex min-h-11 cursor-pointer items-center font-semibold text-danger">Borrar tema</summary>
             <p class="mt-3">Se borrará el tema con todo su contenido. No se puede deshacer.</p>
