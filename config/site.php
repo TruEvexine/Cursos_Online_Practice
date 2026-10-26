@@ -10,6 +10,13 @@ return [
     'open_registration' => (bool) env('SITE_OPEN_REGISTRATION', false),
     'terms_version' => '2026-10-provisional',
 
+    // DEMO (php artisan app:seed-demo): solo con DEMO_MODE=true; sin contraseña por defecto.
+    'demo' => [
+        'enabled' => (bool) env('DEMO_MODE', false),
+        'password' => env('DEMO_PASSWORD'),
+        'email_base' => env('DEMO_EMAIL_BASE'), // p. ej. tu@gmail.com → tu+gg-alumno01@gmail.com
+    ],
+
     // Calificaciones: debajo de este porcentaje la nota se marca "por reforzar".
     'reinforce_below_percent' => 70,
 

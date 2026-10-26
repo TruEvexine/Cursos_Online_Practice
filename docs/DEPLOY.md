@@ -133,6 +133,23 @@ php artisan app:create-super-admin
 ```
 **(sin comprobar: el nombre y las opciones de `railway ssh` en tu versión de la CLI)**
 
+## 7b. Datos de la DEMO
+
+1. Variables:
+   - `DEMO_MODE=true`;
+   - `DEMO_PASSWORD=<una clave>` (no hay valor por defecto);
+   - `DEMO_EMAIL_BASE=<tu correo>`.
+
+   Las cuentas usan plus-addressing (`tu+gg-alumno01@…`), así que las invitaciones y verificaciones te llegan a ti.
+2. Aplica antes `database/changes/002_catalogo.sql`, para que los cursos aparezcan en el catálogo. Sin él, se siembran pero sin precio.
+3. `php artisan app:seed-demo`:
+   - es idempotente;
+   - con `--reset`, borra y recrea los tres cursos demo.
+
+   Nunca crea ni cambia al super admin.
+4. Para el registro abierto: `SITE_OPEN_REGISTRATION=true`.
+5. Al terminar la demostración: `DEMO_MODE=false`.
+
 ## 8. Respaldo manual antes de cada despliegue
 
 Con el acceso público de MySQL activo, guarda el respaldo **fuera del repositorio** (los `.sql` están ignorados, pero no los dejes en la carpeta del proyecto):

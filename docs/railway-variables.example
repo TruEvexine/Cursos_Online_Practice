@@ -41,6 +41,12 @@ MAIL_FROM_ADDRESS=no-responder@correo.tudominio.com
 MAIL_FROM_NAME="Gaining Grades"
 
 SITE_CONTACT_EMAIL=contacto@tudominio.com
+SITE_OPEN_REGISTRATION=true
+
+# DEMO (php artisan app:seed-demo). Sin contraseña por defecto.
+DEMO_MODE=true
+DEMO_PASSWORD=
+DEMO_EMAIL_BASE=
 SITE_WHATSAPP=520000000000
 
 # Railpack / Caddy
