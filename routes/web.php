@@ -7,6 +7,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cursos/{course}', [ReaderController::class, 'course'])->name('reader.course');
     Route::get('/temas/{topic}', [ReaderController::class, 'topic'])->name('reader.topic');
     Route::post('/temas/{topic}/visto', [ReaderController::class, 'markSeen'])->name('reader.seen');
+    Route::post('/tareas/{task}/entrega', [SubmissionController::class, 'store'])->name('submissions.store');
+    Route::get('/entregas/{submission}/archivo', [SubmissionController::class, 'download'])->name('submissions.download');
 
     // Rutas shallow: el curso se deduce del bloque o tema, así que no se pueden mezclar ids de cursos distintos.
     Route::get('/cursos/{course}/bloques', [BlockController::class, 'index'])->name('blocks.index');

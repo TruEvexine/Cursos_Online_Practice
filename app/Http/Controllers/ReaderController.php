@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\Submission;
 use App\Models\Topic;
 use App\Support\CourseProgress;
 use Illuminate\Http\Request;
@@ -49,7 +50,10 @@ class ReaderController extends Controller
 
         return view('reader.topic', [
             'course' => $course,
-            'topic' => $topic->load(['block', 'materials' => fn ($q) => $q->orderBy('id')]),
+            'topic' => $topic->load(['block', 'tasks', 'materials' => fn ($q) => $q->orderBy('id')]),
+            'submissions' => $progress->student
+                ? Submission::where('user_id', $progress->student->id)->whereIn('task_id', $topic->tasks->pluck('id'))->get()->keyBy('task_id')
+                : collect(),
             'progress' => $progress,
             'prev' => $i > 0 ? $ordered[$i - 1] : null,
             'next' => $ordered[$i + 1] ?? null,

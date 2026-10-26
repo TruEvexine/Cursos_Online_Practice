@@ -16,6 +16,59 @@
 
     <x-material-list :materials="$topic->materials" />
 
+    @if ($topic->tasks->isNotEmpty())
+        <section aria-labelledby="tareas" class="mt-8 max-w-[72ch]">
+            <h2 id="tareas" class="font-serif text-2xl font-semibold">{{ $topic->tasks->count() === 1 ? 'Tarea' : 'Tareas' }}</h2>
+            @foreach ($topic->tasks as $task)
+                @php $submission = $submissions[$task->id] ?? null; @endphp
+                <article id="tarea-{{ $task->id }}" aria-labelledby="tarea-titulo-{{ $task->id }}" class="mt-4 rounded-card border border-line bg-surface p-5">
+                    <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                        <h3 id="tarea-titulo-{{ $task->id }}" class="font-serif text-xl font-semibold [overflow-wrap:anywhere]">{{ $task->title }}</h3>
+                        @if ($progress->student)<x-task-status :submission="$submission" :task="$task" />@endif
+                    </div>
+                    <p class="mt-1 text-sm text-muted">
+                        {{ $task->due_at ? 'Vence el '.$task->due_at->timezone('America/Mexico_City')->isoFormat('D MMM YYYY, H:mm') : 'Sin fecha límite' }}
+                        · vale {{ $task->max_score + 0 }} puntos{{ $task->is_required ? '' : ' · opcional' }}{{ $task->allow_late ? ' · acepta entregas tarde' : '' }}
+                    </p>
+                    @if ($task->instructions)
+                        <div class="prose-content mt-3">{!! $task->instructionsHtml() !!}</div>
+                    @endif
+
+                    @if ($submission?->feedback)
+                        <div class="mt-4 rounded-field bg-sunken p-4">
+                            <p class="font-semibold">Retroalimentación de tu ponente</p>
+                            <p class="mt-1 whitespace-pre-line">{{ $submission->feedback }}</p>
+                        </div>
+                    @endif
+
+                    @if ($submission && $submission->status !== 'returned')
+                        <div class="mt-4">
+                            <p class="font-semibold">Tu entrega</p>
+                            @if ($submission->body)<p class="mt-1 whitespace-pre-line [overflow-wrap:anywhere]">{{ $submission->body }}</p>@endif
+                            @if ($submission->file_path)
+                                <a href="{{ route('submissions.download', $submission) }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline">Descargar {{ $submission->original_name }}</a>
+                            @endif
+                        </div>
+                    @endif
+
+                    @php
+                        $canSubmit = auth()->user()->can('participate', $course) && $submission?->status !== 'graded'
+                            && (! $task->isPastDue() || $task->allow_late || $submission?->status === 'returned');
+                    @endphp
+                    @if ($canSubmit)
+                        <form method="POST" action="{{ route('submissions.store', $task) }}" enctype="multipart/form-data" class="mt-4 space-y-4" novalidate>
+                            @csrf
+                            <x-field name="body" :id="'body-'.$task->id" label="{{ $submission ? 'Editar tu respuesta' : 'Tu respuesta' }}" type="textarea" rows="5" maxlength="20000" :value="$submission?->body" />
+                            <x-field name="file" :id="'file-'.$task->id" label="Archivo (opcional)" type="file" accept=".pdf,.docx,.pptx,.xlsx,.png,.jpg,.jpeg,.webp" class="py-2"
+                                     help="PDF, Word, PowerPoint, Excel o imagen. Máximo {{ App\Models\Material::maxUploadMb() }} MB.{{ $submission?->file_path ? ' Si subes otro, reemplaza al anterior.' : '' }}" />
+                            <button type="submit" class="min-h-11 rounded-field bg-primary px-6 font-semibold text-canvas transition-colors duration-150 hover:bg-primary-hover">{{ $submission ? 'Guardar cambios' : 'Entregar' }}</button>
+                        </form>
+                    @endif
+                </article>
+            @endforeach
+        </section>
+    @endif
+
     @can('participate', $course)
         @php [$done, $total] = $progress->steps($topic); @endphp
         <section aria-labelledby="progreso" class="mt-8 max-w-[72ch] rounded-card bg-sunken p-5">
