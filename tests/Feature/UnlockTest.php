@@ -112,4 +112,16 @@ class UnlockTest extends TestCase
         $this->assertSame(1, DB::table('topic_progress')->where('user_id', $this->student->id)->count());
         $this->get("/temas/{$this->t['uno']->id}")->assertDontSee('Marcar como visto')->assertSee('1 de 2 pasos');
     }
+
+    public function test_mission_map_shows_states_in_text(): void
+    {
+        $this->actingAs($this->student)->post("/temas/{$this->t['uno']->id}/visto");
+        $this->submit();
+
+        $this->get("/cursos/{$this->course->id}")->assertOk()
+            ->assertSee('Tu mapa de misiones')->assertSee('Completado')->assertSee('Disponible')
+            ->assertSee('Bloqueado: completa «Dos» para desbloquearlo.', false)
+            ->assertSee('1 de 1 temas obligatorios')->assertSee('0 de 2 temas obligatorios')
+            ->assertDontSee(route('reader.topic', $this->t['tres']), false);
+    }
 }

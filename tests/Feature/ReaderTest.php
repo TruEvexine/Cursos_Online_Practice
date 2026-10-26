@@ -39,11 +39,14 @@ class ReaderTest extends TestCase
             ->assertSee('Estadística')->assertSee('Álgebra terminada')->assertSee('Terminado')
             ->assertDontSee('Curso quitado')->assertDontSee('Curso en borrador');
 
-        $this->get("/cursos/{$course->id}")->assertOk()->assertSee('Temario')->assertSee('Distinguir tipos de variables.')
+        $this->get("/cursos/{$course->id}")->assertOk()->assertSee('Tu mapa de misiones')->assertSee('Distinguir tipos de variables.')
             ->assertSee('Qué es un dato')->assertDontSee('Vista previa');
         $this->get("/temas/{$first->id}")->assertOk()
             ->assertSee('<h1>Datos</h1>', false)->assertSee('<strong>dato</strong>', false)
-            ->assertSee(route('reader.topic', $second), false);
+            ->assertDontSee(route('reader.topic', $second), false);
+        // El siguiente tema se abre al marcar el primero como visto (no tiene tareas).
+        $this->post("/temas/{$first->id}/visto");
+        $this->get("/temas/{$first->id}")->assertSee(route('reader.topic', $second), false);
         $this->get("/cursos/{$done->id}")->assertOk();
     }
 

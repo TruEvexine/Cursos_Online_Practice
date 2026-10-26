@@ -42,7 +42,7 @@
         @else
             <span></span>
         @endif
-        @if ($next)
+        @if ($next && $progress->isOpen($next))
             <a href="{{ route('reader.topic', $next) }}" class="ml-auto inline-flex min-h-11 max-w-full items-center gap-2 text-right font-semibold text-primary underline"><span class="[overflow-wrap:anywhere]"><span class="sr-only">Siguiente: </span>{{ $next->title }}</span><span aria-hidden="true">→</span></a>
         @else
             <a href="{{ route('reader.course', $course) }}" class="ml-auto inline-flex min-h-11 items-center font-semibold text-primary underline">Volver al temario</a>
