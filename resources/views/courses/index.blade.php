@@ -2,7 +2,7 @@
 
 <x-layouts.app title="Cursos — Gaining Grades" :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => null]">
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 class="font-serif text-3xl font-semibold">{{ $showPonente ? 'Cursos' : 'Mis cursos' }}</h1>
+        <h1 class="font-serif text-4xl font-semibold">{{ $showPonente ? 'Cursos' : 'Mis cursos' }}</h1>
         @can('create', App\Models\Course::class)
             <a href="{{ route('courses.create') }}" class="inline-flex min-h-11 items-center rounded-field bg-primary px-6 font-semibold text-canvas hover:bg-primary-hover">Nuevo curso</a>
         @endcan

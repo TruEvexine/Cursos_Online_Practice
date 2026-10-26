@@ -6,6 +6,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\GradingController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\PonenteHomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\StudentController;
@@ -32,7 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     $home = fn (string $area) => fn () => view('home', ['area' => $area]);
     Route::get('/admin', $home('super_admin'))->middleware('role:super_admin')->name('super_admin.home');
     Route::get('/direccion', $home('director'))->middleware('role:director,super_admin')->name('director.home');
-    Route::get('/ponente', $home('ponente'))->middleware('role:ponente')->name('ponente.home');
+    Route::get('/ponente', PonenteHomeController::class)->middleware('role:ponente')->name('ponente.home');
     Route::get('/alumno', [ReaderController::class, 'myCourses'])->middleware('role:alumno')->name('alumno.home');
 
     // Permisos en CoursePolicy (cada acción del controlador la autoriza).
