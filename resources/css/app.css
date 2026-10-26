@@ -6,12 +6,12 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
-/* Tokens de docs/DESIGN.md, sección 2 */
+/* Tokens de docs/DESIGN.md, sección 2 (v2: papel cálido) */
 :root {
-    --canvas: #F6F7F9;   --surface: #FFFFFF;   --surface-sunken: #EEF1F5;
-    --border: #E2E6EC;   --border-strong: #64748B;
-    --ink: #0F172A;      --ink-muted: #475569;
-    --primary: #1F3A8A;  --primary-hover: #1E40AF;  --primary-soft: #E8EDFB;
+    --canvas: #F7F6F2;   --surface: #FFFFFF;   --surface-sunken: #EFEDE7;
+    --border: #E4E1D8;   --border-strong: #6B6A63;
+    --ink: #16213A;      --ink-muted: #4B5263;
+    --primary: #1F3A8A;  --primary-hover: #182E6E;  --primary-soft: #E7ECF8;
     --accent: #F59E0B;   --accent-ink: #92400E;
     --success: #15803D;  --success-ink: #166534;  --success-soft: #E7F5EC;
     --warning: #B45309;  --warning-soft: #FDF1DC;  --warning-ink: #92400E;
@@ -22,7 +22,7 @@
 
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-        --canvas: #0B1220;   --surface: #111A2E;   --surface-sunken: #0E1626;
+        --canvas: #0D1322;   --surface: #141C30;   --surface-sunken: #10172A;
         --border: #22304A;   --border-strong: #6B7A99;
         --ink: #E6EAF2;      --ink-muted: #9AA7BD;
         --primary: #7FA8FF;  --primary-hover: #A3C0FF;  --primary-soft: #1B2A4D;
@@ -56,8 +56,8 @@
     --font-sans: 'Source Sans 3', ui-sans-serif, system-ui, sans-serif;
     --font-serif: 'Source Serif 4', ui-serif, Georgia, serif;
 
-    --radius-field: 6px;
-    --radius-card: 10px;
+    --radius-field: 8px;
+    --radius-card: 14px;
 }
 
 :focus-visible {
@@ -73,7 +73,7 @@
 }
 
 /* Markdown de los temas (sin plugin de tipografía): ritmo de lectura sobrio, ancho lo pone la vista (72ch). */
-.prose-content { line-height: 1.7; }
+.prose-content { font-size: 1.125rem; line-height: 1.65; }  /* v2: lectura a 18 px */
 .prose-content > * + * { margin-top: 1em; }
 .prose-content h1, .prose-content h2, .prose-content h3, .prose-content h4 { font-family: var(--font-serif); font-weight: 600; line-height: 1.3; margin-top: 1.6em; }
 .prose-content h1 { font-size: 1.75rem; }
@@ -104,3 +104,6 @@
 .mission-bar::-webkit-progress-bar { background: var(--surface-sunken); }
 .mission-bar::-webkit-progress-value { background: var(--primary); border-radius: 999px; }
 .mission-bar::-moz-progress-bar { background: var(--primary); border-radius: 999px; }
+
+/* v2: títulos serif con tracking ligeramente cerrado (la personalidad sale de la escala, no de otra fuente). */
+.font-serif { letter-spacing: -0.012em; }
