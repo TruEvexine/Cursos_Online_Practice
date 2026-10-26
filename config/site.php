@@ -6,6 +6,9 @@ return [
     'contact_email' => env('SITE_CONTACT_EMAIL'),
     'whatsapp' => env('SITE_WHATSAPP'), // solo dígitos con código de país, p. ej. 52XXXXXXXXXX
 
+    // Calificaciones: debajo de este porcentaje la nota se marca "por reforzar".
+    'reinforce_below_percent' => 70,
+
     'plans' => [
         ['name' => 'Aprendiz', 'price' => 0, 'for' => 'Personas que aprenden por su cuenta.',
             'includes' => 'Entrar a los cursos a los que te inscriban. En los cursos de pago, el precio lo fija cada ponente.'],

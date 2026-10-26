@@ -23,6 +23,13 @@ class CoursePolicy
         return $user->hasRole('alumno') && $course->status === 'published' && $course->hasReader($user);
     }
 
+    /** Participar (marcar como visto, entregar): solo alumno con inscripción 'active' en un curso publicado. 'completed' queda en lectura. */
+    public function participate(User $user, Course $course): bool
+    {
+        return $user->hasRole('alumno') && $course->status === 'published'
+            && $course->enrollments()->where('user_id', $user->id)->where('status', 'active')->exists();
+    }
+
     public function create(User $user): bool
     {
         return $user->hasRole('ponente', 'super_admin');

@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Lectura: alumno inscrito, director y vista previa del dueño o super admin (CoursePolicy::view).
     Route::get('/cursos/{course}', [ReaderController::class, 'course'])->name('reader.course');
     Route::get('/temas/{topic}', [ReaderController::class, 'topic'])->name('reader.topic');
+    Route::post('/temas/{topic}/visto', [ReaderController::class, 'markSeen'])->name('reader.seen');
 
     // Rutas shallow: el curso se deduce del bloque o tema, así que no se pueden mezclar ids de cursos distintos.
     Route::get('/cursos/{course}/bloques', [BlockController::class, 'index'])->name('blocks.index');

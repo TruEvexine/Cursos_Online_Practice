@@ -42,4 +42,9 @@ class Topic extends Model
     {
         return $this->hasMany(Material::class);
     }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class)->orderBy('position')->orderBy('id');
+    }
 }
