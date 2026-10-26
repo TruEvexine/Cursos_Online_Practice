@@ -1,5 +1,6 @@
 <x-reader-layout :course="$course" :title="$course->title" :crumbs="[$course->title => null]">
-    <h1 class="font-serif text-3xl font-semibold">{{ $course->title }}</h1>
+    <x-course-cover :course="$course" class="mb-6 aspect-[16/5] max-w-3xl rounded-card" />
+    <h1 class="max-w-3xl font-serif text-4xl font-semibold lg:text-5xl">{{ $course->title }}</h1>
     <p class="mt-2 text-muted">
         Imparte {{ $course->ponente->name }}
         @if ($course->starts_on)

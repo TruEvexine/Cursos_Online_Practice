@@ -10,7 +10,7 @@
     $fill = ['#1F3A8A', '#0F766E', '#166534', '#92400E', '#334155'][$seed % 5];
     $points = [];
     foreach (range(0, 4) as $i) {
-        $points[] = [30 + $i * 65, 50 + (($seed >> ($i * 3)) % 5) * 20];
+        $points[] = [30 + $i * 65, 62 + (($seed >> ($i * 3)) % 5) * 14]; // y entre 62 y 118: no se recorta en ningún formato
     }
     $path = 'M'.implode(' L', array_map(fn ($p) => $p[0].' '.$p[1], $points));
     $done = 1 + $seed % 3; // nodos "completados" del dibujo
