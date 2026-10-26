@@ -93,6 +93,19 @@ Cada fase termina con la app funcionando, sin código a medias. Al inicio de cad
 - [ ] Portada del curso (`cover_path`) e imágenes dentro de los temas, subidas desde el constructor por el ponente dueño y el super admin (no el director).
 - [ ] Mismas reglas que la foto de perfil: WebP, sin metadatos, almacenamiento privado, nombre aleatorio, servidas por un controlador que autoriza (inscrito `active` o `completed`, dueño, super admin, director).
 
+### Hito DEMO (después de la Fase 3, antes de la Fase 4)
+
+Prueba para mostrar al profesor; no es producción. Entra:
+- [ ] Fase 3 sin comodines (los comodines esperan a que se aplique `001_comodines.sql`; van después de la DEMO).
+- [ ] Del benchmark (`docs/research/benchmark.md`), P1:
+  - "próxima entrega" y pendientes por curso;
+  - retroalimentación junto a la nota;
+  - estado de cada entrega visible y "tarde" en la bandeja.
+- [ ] Registro abierto mínimo (subconjunto de 8b): nombre, correo, fecha de nacimiento (menores de 18 bloqueados) y aceptación de términos.
+- [ ] Catálogo público y pago simulado (subconjunto de 8c): rotulado "modo prueba"; crea la inscripción.
+- [ ] `php artisan app:seed-demo`: idempotente, solo con `DEMO_MODE=true`; nunca toca al super admin real.
+- Siguen fuera: Fase 4 en adelante, comodines y pagos reales.
+
 ### Fase 3 — Misiones, tareas y calificaciones
 - [ ] Reglas de desbloqueo (sección 4) con pruebas, mapa de misiones.
 - [ ] Tareas y entregas (texto y/o archivo), edición de la entrega hasta que se califica.
@@ -125,6 +138,10 @@ Cada fase termina con la app funcionando, sin código a medias. Al inicio de cad
 - [ ] Revisión de accesibilidad y movimiento (`design-motion-principles`, modo audit).
 - [ ] Respaldo (`mysqldump` + carpeta de archivos privados) y guía de despliegue con la plataforma que elijas.
 - **Hecho cuando:** lista de seguridad de `CLAUDE.md` sin pendientes y respaldo restaurado con éxito en una máquina limpia.
+
+### Del benchmark, P2 (`docs/research/benchmark.md`)
+- [ ] Fase 4: guardar cada respuesta al contestarla y enviar lo guardado al acabarse el tiempo desde el servidor, probado con JS apagado.
+- [ ] Fase 8c: estados claros de cada pago (solicitado, comprobante enviado, confirmado, rechazado), visibles al alumno y en la bitácora.
 
 ### Fase 8 — Negocio (después de las Fases 3 y 4)
 
