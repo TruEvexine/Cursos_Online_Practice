@@ -138,7 +138,7 @@ class SeedDemo extends Command
                 $topicModel = $blockModel->topics()->create(['title' => $topic['title'], 'content' => $topic['content'], 'position' => $t + 1, 'is_required' => $topic['required'] ?? true]);
                 foreach ($topic['tasks'] as $k => $task) {
                     $topicModel->tasks()->create(['title' => $task['title'], 'instructions' => $task['instructions'], 'max_score' => $task['max'], 'weight' => $task['weight'] ?? 1,
-                        'due_at' => now()->addDays($task['due'])->setTime(23, 59), 'is_required' => true, 'allow_late' => $task['due'] < 0, 'position' => $k + 1]);
+                        'due_at' => now('America/Mexico_City')->addDays($task['due'])->setTime(23, 59)->utc(), 'is_required' => true, 'allow_late' => $task['due'] < 0, 'position' => $k + 1]);
                 }
             }
         }

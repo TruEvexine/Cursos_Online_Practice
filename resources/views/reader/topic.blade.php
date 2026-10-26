@@ -41,20 +41,20 @@
                         </div>
                     @endif
 
-                    @if ($submission && $submission->status !== 'returned')
-                        <div class="mt-4">
-                            <p class="font-semibold">Tu entrega</p>
-                            @if ($submission->body)<p class="mt-1 whitespace-pre-line [overflow-wrap:anywhere]">{{ $submission->body }}</p>@endif
-                            @if ($submission->file_path)
-                                <a href="{{ route('submissions.download', $submission) }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline">Descargar {{ $submission->original_name }}</a>
-                            @endif
-                        </div>
-                    @endif
-
                     @php
                         $canSubmit = auth()->user()->can('participate', $course) && $submission?->status !== 'graded'
                             && (! $task->isPastDue() || $task->allow_late || $submission?->status === 'returned');
                     @endphp
+                    {{-- Si todavía se puede editar, la entrega se ve dentro del formulario; si no, aquí. --}}
+                    @if ($submission && ! $canSubmit)
+                        <div class="mt-4">
+                            <p class="font-semibold">Tu entrega</p>
+                            @if ($submission->body)<p class="mt-1 whitespace-pre-line [overflow-wrap:anywhere]">{{ $submission->body }}</p>@endif
+                        </div>
+                    @endif
+                    @if ($submission?->file_path)
+                        <a href="{{ route('submissions.download', $submission) }}" class="mt-2 inline-flex min-h-11 items-center font-semibold text-primary underline">Archivo entregado: {{ $submission->original_name }}</a>
+                    @endif
                     @if ($canSubmit)
                         <form method="POST" action="{{ route('submissions.store', $task) }}" enctype="multipart/form-data" class="mt-4 space-y-4" novalidate>
                             @csrf
