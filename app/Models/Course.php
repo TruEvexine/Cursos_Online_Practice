@@ -49,6 +49,18 @@ class Course extends Model
         return $this->hasMany(Enrollment::class);
     }
 
+    /**
+     * Tareas que el alumno todavía debe entregar: sin entrega o devueltas, y que aún se pueden entregar
+     * (sin fecha, antes de la fecha o que aceptan tarde). Las de fecha más próxima primero.
+     */
+    public function pendingTasksFor(User $user)
+    {
+        return Task::whereHas('topic.block', fn ($q) => $q->where('course_id', $this->id))
+            ->whereDoesntHave('submissions', fn ($q) => $q->where('user_id', $user->id)->where('status', '!=', 'returned'))
+            ->where(fn ($q) => $q->whereNull('due_at')->orWhere('due_at', '>', now())->orWhere('allow_late', true))
+            ->with('topic')->orderByRaw('due_at IS NULL')->orderBy('due_at')->get();
+    }
+
     /** Alumno que puede leer el curso: inscripción 'active' o 'completed' ('removed' no). */
     public function hasReader(User $user): bool
     {

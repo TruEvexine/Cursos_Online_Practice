@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Lectura: alumno inscrito, director y vista previa del dueño o super admin (CoursePolicy::view).
     Route::get('/cursos/{course}', [ReaderController::class, 'course'])->name('reader.course');
     Route::get('/temas/{topic}', [ReaderController::class, 'topic'])->name('reader.topic');
+    Route::get('/cursos/{course}/calificaciones', [ReaderController::class, 'grades'])->name('reader.grades');
     Route::post('/temas/{topic}/visto', [ReaderController::class, 'markSeen'])->name('reader.seen');
     Route::post('/tareas/{task}/entrega', [SubmissionController::class, 'store'])->name('submissions.store');
     Route::get('/entregas/{submission}/archivo', [SubmissionController::class, 'download'])->name('submissions.download');

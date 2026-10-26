@@ -26,6 +26,12 @@
                             {{ $course->ends_on ? 'Del '.$course->starts_on->isoFormat('D MMM').' al '.$course->ends_on->isoFormat('D MMM YYYY') : 'Inicia el '.$course->starts_on->isoFormat('D MMM YYYY') }}
                         </p>
                     @endif
+                    @if ($next = ($pending[$course->id] ?? collect())->first())
+                        <p class="mt-3 rounded-field bg-primary-soft px-3 py-2 text-sm">
+                            <span class="font-semibold">Próxima entrega:</span> {{ $next->title }}
+                            <span class="block text-muted">{{ $next->due_at ? 'Vence el '.$next->due_at->timezone('America/Mexico_City')->isoFormat('D MMM, H:mm') : 'Sin fecha límite' }}{{ $pending[$course->id]->count() > 1 ? ' · '.$pending[$course->id]->count().' pendientes' : '' }}</span>
+                        </p>
+                    @endif
                     <a href="{{ route('reader.course', $course) }}" class="mt-auto inline-flex min-h-11 items-center self-start pt-4 font-semibold text-primary underline">
                         {{ $enrollment->status === 'completed' ? 'Repasar' : 'Entrar' }}<span class="sr-only"> a «{{ $course->title }}»</span>
                     </a>

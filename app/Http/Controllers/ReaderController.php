@@ -24,7 +24,10 @@ class ReaderController extends Controller
             ->whereHas('course', fn ($q) => $q->where('status', 'published'))
             ->with('course.ponente')->orderBy('status')->orderByDesc('enrolled_at')->get();
 
-        return view('reader.my-courses', ['enrollments' => $enrollments]);
+        // Próxima entrega y pendientes por curso (benchmark P1): solo para inscripciones activas.
+        $pending = $enrollments->where('status', 'active')->mapWithKeys(fn ($e) => [$e->course_id => $e->course->pendingTasksFor($request->user())]);
+
+        return view('reader.my-courses', ['enrollments' => $enrollments, 'pending' => $pending]);
     }
 
     public function course(Course $course)
@@ -32,7 +35,10 @@ class ReaderController extends Controller
         Gate::authorize('view', $course);
         $course->load(['ponente', 'blocks.topics.tasks', 'materials' => fn ($q) => $q->whereNull('topic_id')->orderBy('id')]);
 
-        return view('reader.course', ['course' => $course, 'progress' => $this->progress($course)]);
+        $progress = $this->progress($course);
+
+        return view('reader.course', ['course' => $course, 'progress' => $progress,
+            'pending' => $progress->student && auth()->user()->can('participate', $course) ? $course->pendingTasksFor($progress->student) : collect()]);
     }
 
     public function topic(Topic $topic)
@@ -58,6 +64,28 @@ class ReaderController extends Controller
             'prev' => $i > 0 ? $ordered[$i - 1] : null,
             'next' => $ordered[$i + 1] ?? null,
         ]);
+    }
+
+    /** Calificaciones del propio alumno, por bloque, con promedio ponderado de lo calificado. */
+    public function grades(Request $request, Course $course)
+    {
+        Gate::authorize('view', $course);
+        abort_unless($request->user()->hasRole('alumno'), 403);
+
+        $course->load('blocks.topics.tasks');
+        $submissions = Submission::where('user_id', $request->user()->id)
+            ->whereIn('task_id', $course->blocks->flatMap->topics->flatMap->tasks->pluck('id'))->get()->keyBy('task_id');
+
+        return view('reader.grades', ['course' => $course, 'submissions' => $submissions, 'average' => self::weightedAverage($submissions)]);
+    }
+
+    /** Promedio ponderado 0–100 de las tareas calificadas (DATABASE.md): Σ(nota/máx × peso) / Σ peso. */
+    public static function weightedAverage($submissions): ?float
+    {
+        $graded = $submissions->where('status', 'graded')->filter(fn ($s) => $s->task->weight > 0);
+        $weights = $graded->sum(fn ($s) => $s->task->weight);
+
+        return $weights > 0 ? round($graded->sum(fn ($s) => $s->score / $s->task->max_score * $s->task->weight) / $weights * 100, 1) : null;
     }
 
     /** "Marcar como visto": solo el alumno activo y con el tema abierto; la vista previa nunca llega aquí. */

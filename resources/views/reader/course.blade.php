@@ -10,6 +10,24 @@
         <p class="mt-4 max-w-[72ch] whitespace-pre-line">{{ $course->description }}</p>
     @endif
 
+    @if ($progress->student)
+        <div class="mt-6 grid max-w-3xl gap-4 sm:grid-cols-2">
+            <section aria-labelledby="pendientes" class="rounded-card bg-primary-soft p-5">
+                <h2 id="pendientes" class="font-semibold">Próxima entrega</h2>
+                @if ($next = $pending->first())
+                    <a href="{{ route('reader.topic', $next->topic) }}#tarea-{{ $next->id }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline [overflow-wrap:anywhere]">{{ $next->title }}</a>
+                    <p class="text-sm">{{ $next->due_at ? 'Vence el '.$next->due_at->timezone('America/Mexico_City')->isoFormat('D MMM, H:mm') : 'Sin fecha límite' }}
+                        @if ($pending->count() > 1) · {{ $pending->count() }} tareas pendientes en total @endif</p>
+                @else
+                    <p class="mt-1">No tienes tareas pendientes.</p>
+                @endif
+            </section>
+            <a href="{{ route('reader.grades', $course) }}" class="flex min-h-11 items-center justify-between rounded-card border border-line bg-surface p-5 font-semibold text-primary hover:bg-sunken">
+                Mis calificaciones <span aria-hidden="true">→</span>
+            </a>
+        </div>
+    @endif
+
     <h2 class="mt-8 mb-4 font-serif text-2xl font-semibold">{{ $progress->student ? 'Tu mapa de misiones' : 'Temario' }}</h2>
     {{-- Mapa de misiones (DESIGN §6): cada bloque es una misión y cada tema un nodo del camino. El estado siempre va también en texto. --}}
     @forelse ($course->blocks as $block)
