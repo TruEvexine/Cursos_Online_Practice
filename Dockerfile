@@ -9,7 +9,7 @@ COPY public ./public
 RUN npm run build
 
 FROM dunglas/frankenphp:1-php8.4
-RUN apt-get update && apt-get install -y --no-install-recommends unzip \
+RUN apt-get update && apt-get install -y --no-install-recommends unzip libcap2-bin \
     && rm -rf /var/lib/apt/lists/* \
     && install-php-extensions gd intl pdo_mysql mbstring fileinfo opcache
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -27,5 +27,6 @@ RUN composer dump-autoload --optimize --no-dev --no-scripts \
 RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && printf 'upload_max_filesize=10M\npost_max_size=12M\nmemory_limit=256M\n' > "$PHP_INI_DIR/conf.d/zz-app.ini"
 
-RUN chmod +x start-container.sh
+# Render no concede capacidades de Linux: el binario con CAP_NET_BIND_SERVICE no se puede ejecutar. Escuchamos en PORT (alto).
+RUN setcap -r /usr/local/bin/frankenphp; chmod +x start-container.sh
 ENTRYPOINT ["./start-container.sh"]

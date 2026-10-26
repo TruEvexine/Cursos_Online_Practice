@@ -18,4 +18,4 @@ php artisan optimize
 
 CADDYFILE=/etc/frankenphp/Caddyfile
 [ -f "$CADDYFILE" ] || CADDYFILE=/etc/caddy/Caddyfile
-exec docker-php-entrypoint frankenphp run --config "$CADDYFILE" --adapter caddyfile
+exec frankenphp run --config "$CADDYFILE" --adapter caddyfile
