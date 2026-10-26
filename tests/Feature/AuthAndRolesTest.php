@@ -131,11 +131,6 @@ class AuthAndRolesTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_public_registration_does_not_exist(): void
-    {
-        $this->get('/register')->assertNotFound();
-        $this->post('/register')->assertNotFound();
-    }
 
     public function test_login_is_rate_limited(): void
     {

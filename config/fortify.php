@@ -161,10 +161,11 @@ return [
     |
     */
 
-    // Sin registro público (nunca). 2FA y passkeys necesitarían columnas nuevas en el esquema.
-    'features' => [
+    // Registro abierto solo si SITE_OPEN_REGISTRATION=true (hito DEMO; Fase 8b). 2FA y passkeys necesitarían columnas nuevas.
+    'features' => array_values(array_filter([
+        env('SITE_OPEN_REGISTRATION', false) ? Features::registration() : null,
         Features::resetPasswords(),
         Features::emailVerification(),
-    ],
+    ])),
 
 ];

@@ -15,4 +15,7 @@
     </button>
 
     <p class="text-center"><a href="{{ route('password.request') }}" class="inline-flex min-h-11 items-center text-primary underline">¿Olvidaste tu contraseña?</a></p>
+    @if (Route::has('register'))
+        <p class="text-center">¿No tienes cuenta? <a href="{{ route('register') }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline">Crea una</a></p>
+    @endif
 </form>
