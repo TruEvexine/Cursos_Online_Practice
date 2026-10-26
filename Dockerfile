@@ -20,7 +20,7 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-in
 COPY . .
 COPY --from=assets /app/public/build ./public/build
 RUN composer dump-autoload --optimize --no-dev --no-scripts \
-    && php artisan package:discover --ansi \
+    && APP_ENV=local php artisan package:discover --ansi \
     && mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 
 # Subidas de hasta 10 MB (la app valida 10 MB); el php.ini de producción trae 2 MB.
