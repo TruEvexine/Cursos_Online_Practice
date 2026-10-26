@@ -60,6 +60,7 @@ return [
         'feedback' => 'retroalimentación',
         'body' => 'respuesta',
         'birth_date' => 'fecha de nacimiento',
+        'catalog_price' => 'precio en el catálogo',
         'terms' => 'términos',
         'topic_id' => 'tema',
         'file' => 'archivo',

@@ -30,6 +30,13 @@ class CoursePolicy
             && $course->enrollments()->where('user_id', $user->id)->where('status', 'active')->exists();
     }
 
+    /** Inscribirse solo desde el catálogo: alumno, curso publicado y listado, y sin haber sido quitado por el ponente. */
+    public function enrollSelf(User $user, Course $course): bool
+    {
+        return $user->hasRole('alumno') && $course->isListed()
+            && ! $course->enrollments()->where('user_id', $user->id)->where('status', 'removed')->exists();
+    }
+
     public function create(User $user): bool
     {
         return $user->hasRole('ponente', 'super_admin');

@@ -75,11 +75,13 @@ CREATE TABLE IF NOT EXISTS courses (
     unlock_mode ENUM('sequential','free') NOT NULL DEFAULT 'sequential', -- misiones: secuencial o libre
     starts_on   DATE NULL,
     ends_on     DATE NULL,
+    catalog_price DECIMAL(8,2) NULL,                    -- catálogo: NULL = oculto, 0 = gratis, > 0 = precio MXN (changes/002)
     created_at  DATETIME NULL,
     updated_at  DATETIME NULL,
     deleted_at  DATETIME NULL,
     KEY idx_courses_ponente (ponente_id, status),
-    CONSTRAINT fk_courses_ponente FOREIGN KEY (ponente_id) REFERENCES users (id)
+    CONSTRAINT fk_courses_ponente FOREIGN KEY (ponente_id) REFERENCES users (id),
+    CONSTRAINT chk_courses_catalog_price CHECK (catalog_price IS NULL OR catalog_price >= 0)
     ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS enrollments (

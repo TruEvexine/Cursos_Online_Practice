@@ -26,6 +26,8 @@ class CourseRequest extends FormRequest
             'status' => ['required', Rule::in(['draft', 'published', 'archived'])],
             'starts_on' => ['nullable', 'date'],
             'ends_on' => ['nullable', 'date', 'after_or_equal:starts_on'],
+            // Catálogo (changes/002): vacío = oculto, 0 = gratis, > 0 = precio MXN.
+            'catalog_price' => ['nullable', 'numeric', 'min:0', 'max:99999'],
         ];
 
         if (! $this->route('course') && $this->user()->hasRole('super_admin')) {

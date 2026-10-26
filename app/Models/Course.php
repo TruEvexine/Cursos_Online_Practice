@@ -16,11 +16,11 @@ class Course extends Model
     use HasFactory, SoftDeletes;
 
     // ponente_id no es asignable en masa: lo pone el controlador con el usuario en sesión.
-    protected $fillable = ['title', 'summary', 'description', 'status', 'unlock_mode', 'starts_on', 'ends_on'];
+    protected $fillable = ['title', 'summary', 'description', 'status', 'unlock_mode', 'starts_on', 'ends_on', 'catalog_price'];
 
     protected function casts(): array
     {
-        return ['starts_on' => 'date', 'ends_on' => 'date'];
+        return ['starts_on' => 'date', 'ends_on' => 'date', 'catalog_price' => 'decimal:2'];
     }
 
     protected static function booted(): void
@@ -59,6 +59,12 @@ class Course extends Model
             ->whereDoesntHave('submissions', fn ($q) => $q->where('user_id', $user->id)->where('status', '!=', 'returned'))
             ->where(fn ($q) => $q->whereNull('due_at')->orWhere('due_at', '>', now())->orWhere('allow_late', true))
             ->with('topic')->orderByRaw('due_at IS NULL')->orderBy('due_at')->get();
+    }
+
+    /** En el catálogo público: publicado y con precio (0 = gratis). database/changes/002_catalogo.sql */
+    public function isListed(): bool
+    {
+        return $this->status === 'published' && $this->catalog_price !== null;
     }
 
     /** Alumno que puede leer el curso: inscripción 'active' o 'completed' ('removed' no). */

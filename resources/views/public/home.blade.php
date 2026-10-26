@@ -7,8 +7,11 @@
         'Materiales' => 'PDF, Word, PowerPoint, Excel e imágenes en almacenamiento privado; también enlaces y videos externos.',
         'Invitaciones por correo' => 'Inscribes a tus alumnos con su correo; quien no tiene cuenta recibe un enlace para fijar su contraseña.',
         'Vista previa como alumno' => 'Revisa el curso tal como lo verá un alumno, incluso en borrador, sin registrar progreso.',
+        'Misiones con desbloqueo' => 'Los temas se abren en orden conforme el alumno los lee y entrega sus tareas obligatorias.',
+        'Tareas y calificaciones' => 'Entregas con texto o archivo, calificación con retroalimentación, devolver para corregir y promedio ponderado.',
+        'Registro abierto y catálogo' => 'Cualquier persona mayor de 18 años crea su cuenta y se inscribe desde el catálogo (pago simulado, modo prueba).',
     ];
-    $soon = ['Misiones con desbloqueo por temas', 'Tareas y calificaciones con retroalimentación', 'Exámenes con tiempo límite', 'Clase en vivo y chat', 'Registro abierto', 'Catálogo público de cursos', 'Cursos de pago', 'Escuelas con sus profesores y alumnos'];
+    $soon = ['Exámenes con tiempo límite', 'Comodines por puntualidad y calidad', 'Clase en vivo y chat', 'Cobro real de cursos de pago', 'Registro de menores con autorización', 'Escuelas con sus profesores y alumnos'];
     $roles = [
         'Alumno' => 'Ve sus cursos, lee los temas y descarga los materiales. Más adelante: entrega tareas, presenta exámenes y consulta sus calificaciones.',
         'Ponente' => 'Crea y edita sus cursos, sube materiales, agrega y quita alumnos. Más adelante: califica tareas y exámenes, publica avisos y da clase en vivo.',
@@ -16,7 +19,7 @@
         'Super admin' => 'Administra todo: cursos de cualquier ponente y, más adelante, usuarios, roles y la bitácora del sistema.',
     ];
     $faq = [
-        '¿Puedo crear mi cuenta yo mismo?' => 'Todavía no. Hoy un ponente te inscribe con tu correo y te llega un enlace para fijar tu contraseña. El registro abierto llegará más adelante.',
+        '¿Puedo crear mi cuenta yo mismo?' => 'Sí, si tienes 18 años o más: crea tu cuenta de alumno e inscríbete desde el catálogo. También puede inscribirte un ponente con tu correo; te llegará un enlace para fijar tu contraseña.',
         '¿Cuánto cuesta?' => 'Los planes de esta página son de ejemplo y pueden cambiar. Aún no cobramos en línea: si te interesa un plan, escríbenos.',
         '¿Cómo se paga?' => 'Por depósito o transferencia mientras no haya pasarela de pago. Te enviamos los datos y una referencia por correo; nunca publicamos datos bancarios en la página.',
         '¿Quién puede ver mis archivos?' => 'Los materiales se guardan en almacenamiento privado y solo los descargan quienes tienen permiso en ese curso: sus alumnos, su ponente y la dirección.',
@@ -52,7 +55,9 @@
                         <p role="status" class="mb-3 rounded-field bg-success-soft px-3 py-2 text-success-ink"><span aria-hidden="true">✓</span> {{ session('status') }}</p>
                     @endif
                     <x-login-form />
-                    <p class="mt-3 text-sm text-muted">¿Sin cuenta? Hoy entras cuando un ponente te inscribe con tu correo.</p>
+                    @unless (Route::has('register'))
+                        <p class="mt-3 text-sm text-muted">¿Sin cuenta? Hoy entras cuando un ponente te inscribe con tu correo.</p>
+                    @endunless
                 @endauth
             </div>
         </div>

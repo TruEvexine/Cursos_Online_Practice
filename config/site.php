@@ -6,6 +6,10 @@ return [
     'contact_email' => env('SITE_CONTACT_EMAIL'),
     'whatsapp' => env('SITE_WHATSAPP'), // solo dígitos con código de país, p. ej. 52XXXXXXXXXX
 
+    // Registro abierto: versión de términos y aviso que se acepta (queda en audit_logs).
+    'open_registration' => (bool) env('SITE_OPEN_REGISTRATION', false),
+    'terms_version' => '2026-10-provisional',
+
     // Calificaciones: debajo de este porcentaje la nota se marca "por reforzar".
     'reinforce_below_percent' => 70,
 

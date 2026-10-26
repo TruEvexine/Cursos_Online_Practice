@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlockController;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\GradingController;
 use App\Http\Controllers\LandingController;
@@ -18,8 +19,13 @@ Route::get('/', LandingController::class)->name('home');
 Route::view('/sobre-nosotros', 'public.about')->name('about');
 Route::view('/aviso-de-privacidad', 'public.privacy')->name('privacy');
 Route::view('/terminos', 'public.terms')->name('terms');
+Route::get('/catalogo', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalogo/{course:slug}', [CatalogController::class, 'show'])->name('catalog.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/catalogo/{course:slug}/pago', [CatalogController::class, 'checkout'])->name('catalog.checkout');
+    Route::post('/catalogo/{course:slug}/inscripcion', [CatalogController::class, 'enroll'])->name('catalog.enroll');
+
     // Cada rol tiene su propio inicio; /dashboard (destino tras el login) manda al que le toca.
     Route::get('/dashboard', fn () => redirect()->route(auth()->user()->role->slug.'.home'))->name('dashboard');
 

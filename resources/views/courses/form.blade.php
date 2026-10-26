@@ -39,6 +39,10 @@
             <x-field name="ends_on" label="Fin (opcional)" type="date" :value="$course->ends_on?->format('Y-m-d')" />
         </div>
 
+        <x-field name="catalog_price" label="Precio en el catálogo (opcional, MXN)" type="number" min="0" max="99999" step="1" class="max-w-40"
+                 :value="$course->catalog_price === null ? null : $course->catalog_price + 0"
+                 help="Vacío: no aparece en el catálogo público. 0: gratis. Más de 0: los alumnos se inscriben con pago simulado (modo prueba)." />
+
         <div class="flex flex-wrap items-center gap-4">
             <button type="submit" class="min-h-11 rounded-field bg-primary px-6 font-semibold text-canvas hover:bg-primary-hover">
                 {{ $editing ? 'Guardar cambios' : 'Crear curso' }}

@@ -6,7 +6,7 @@
     $whatsapp = preg_replace('/\D/', '', (string) config('site.whatsapp'));
     $whatsappShown = $whatsapp ? preg_replace('/^(\d{3})(\d{3})(\d{4})$/', '$1 $2 $3', substr($whatsapp, -10)) : null;
     $footer = [
-        'Producto' => ['Funcionalidades' => $home.'#funcionalidades', 'Roles' => $home.'#roles', 'Planes' => $home.'#planes'],
+        'Producto' => ['Catálogo' => route('catalog.index'), 'Funcionalidades' => $home.'#funcionalidades', 'Roles' => $home.'#roles', 'Planes' => $home.'#planes'],
         'Empresa' => ['Sobre nosotros' => route('about'), 'Contacto' => $home.'#contacto'],
         'Legal' => ['Aviso de privacidad' => route('privacy'), 'Términos' => route('terms')],
     ];
@@ -38,7 +38,8 @@
             <a href="{{ $home }}" class="inline-flex min-h-11 items-center whitespace-nowrap font-serif text-xl font-semibold">Gaining Grades</a>
             <nav aria-label="Secciones" class="hidden lg:block">
                 <ul class="flex gap-6">
-                    @foreach (['Para quién' => 'para-quien', 'Funcionalidades' => 'funcionalidades', 'Planes' => 'planes', 'Preguntas' => 'preguntas', 'Contacto' => 'contacto'] as $label => $anchor)
+                    <li><a href="{{ route('catalog.index') }}" class="inline-flex min-h-11 items-center font-semibold hover:text-primary hover:underline">Catálogo</a></li>
+                    @foreach (['Para quién' => 'para-quien', 'Funcionalidades' => 'funcionalidades', 'Planes' => 'planes', 'Contacto' => 'contacto'] as $label => $anchor)
                         <li><a href="{{ $home }}#{{ $anchor }}" class="inline-flex min-h-11 items-center hover:text-primary hover:underline">{{ $label }}</a></li>
                     @endforeach
                 </ul>
