@@ -70,4 +70,13 @@ class PublicSiteTest extends TestCase
         $this->get('/?alumnos=abc&ponentes=-1')->assertSee('Escribe un número entero.')->assertSee('Escribe un número de 0 a 5,000.')->assertDontSee('al mes</strong>', false);
         $this->get('/?alumnos=5001&ponentes=1')->assertSee('Escribe un número de 0 a 5,000.');
     }
+
+    public function test_home_features_catalog_courses_with_a_generated_cover(): void
+    {
+        $course = \App\Models\Course::factory()->create(['title' => 'Curso destacado', 'catalog_price' => 0]);
+        \App\Models\Course::factory()->create(['title' => 'Curso oculto', 'catalog_price' => null]);
+
+        $this->get('/')->assertOk()->assertSee('Cursos abiertos')->assertSee('Curso destacado')->assertDontSee('Curso oculto')
+            ->assertSee(route('catalog.show', $course), false)->assertSee('<svg viewBox="0 0 320 180"', false);
+    }
 }

@@ -38,7 +38,7 @@
         </svg>
         <div class="relative mx-auto grid max-w-[1120px] gap-10 px-4 py-12 lg:grid-cols-[1fr_380px] lg:items-center lg:py-24">
             <div>
-                <h1 class="max-w-[14ch] font-serif text-[clamp(2.5rem,6vw,4.5rem)] leading-[1.05] font-semibold tracking-tight">Clases en línea, sin enredos</h1>
+                <h1 class="max-w-[14ch] font-serif text-[clamp(2.75rem,7vw,5rem)] leading-[1.02] font-semibold tracking-tight">Clases en línea, sin enredos</h1>
                 <p class="mt-6 max-w-[46ch] text-xl">Gaining Grades facilita dar y recibir clases: para ponentes independientes, escuelas y personas que aprenden por su cuenta.</p>
                 <p class="mt-4 max-w-[46ch] text-muted">¿Prepa, universidad o institución? <a href="#contacto" class="font-semibold text-primary underline">Hablemos de un convenio</a>.</p>
             </div>
@@ -62,6 +62,27 @@
             </div>
         </div>
     </section>
+
+    @if ($featured->isNotEmpty())
+        <section aria-labelledby="catalogo-titulo" class="mx-auto max-w-[1120px] px-4 pt-20">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <h2 id="catalogo-titulo" class="font-serif text-4xl font-semibold">Cursos abiertos</h2>
+                <a href="{{ route('catalog.index') }}" class="inline-flex min-h-11 items-center font-semibold text-primary underline">Ver todo el catálogo</a>
+            </div>
+            <ul class="mt-8 grid gap-6 md:grid-cols-3">
+                @foreach ($featured as $course)
+                    <li class="group overflow-hidden rounded-card border border-line bg-surface transition-colors duration-150 hover:border-line-strong">
+                        <x-course-cover :course="$course" class="aspect-[16/9]" />
+                        <div class="p-5">
+                            <x-course-price :course="$course" class="text-sm font-semibold text-primary" />
+                            <h3 class="mt-1 font-serif text-xl font-semibold"><a href="{{ route('catalog.show', $course) }}" class="hover:underline">{{ $course->title }}</a></h3>
+                            <p class="mt-1 text-muted">Imparte {{ $course->ponente->name }}</p>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+        </section>
+    @endif
 
     <section id="para-quien" aria-labelledby="para-quien-titulo" class="mx-auto max-w-[1120px] px-4 py-20">
         <h2 id="para-quien-titulo" class="font-serif text-4xl font-semibold">Para quién es</h2>
