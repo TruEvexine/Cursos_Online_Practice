@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlockController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\GradingController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
@@ -37,6 +38,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/temas/{topic}/visto', [ReaderController::class, 'markSeen'])->name('reader.seen');
     Route::post('/tareas/{task}/entrega', [SubmissionController::class, 'store'])->name('submissions.store');
     Route::get('/entregas/{submission}/archivo', [SubmissionController::class, 'download'])->name('submissions.download');
+
+    Route::get('/cursos/{course}/entregas', [GradingController::class, 'index'])->name('grading.index');
+    Route::get('/entregas/{submission}', [GradingController::class, 'show'])->name('grading.show');
+    Route::put('/entregas/{submission}/calificar', [GradingController::class, 'grade'])->name('grading.grade');
+    Route::put('/entregas/{submission}/devolver', [GradingController::class, 'returnToStudent'])->name('grading.return');
 
     // Rutas shallow: el curso se deduce del bloque o tema, así que no se pueden mezclar ids de cursos distintos.
     Route::get('/cursos/{course}/bloques', [BlockController::class, 'index'])->name('blocks.index');
