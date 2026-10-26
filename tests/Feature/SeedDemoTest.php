@@ -17,11 +17,15 @@ class SeedDemoTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private string $accounts;
+
     protected function setUp(): void
     {
         parent::setUp();
         Storage::fake('local');
-        config(['site.demo' => ['enabled' => true, 'password' => 'clave-demo-segura', 'email_base' => 'Profe@Ejemplo.MX']]);
+        $this->accounts = tempnam(sys_get_temp_dir(), 'run');
+        file_put_contents($this->accounts, "php artisan serve\n");
+        config(['site.demo' => ['enabled' => true, 'password' => 'clave-demo-segura', 'email_base' => 'Profe@Ejemplo.MX', 'accounts_file' => $this->accounts]]);
     }
 
     private function demoUsers()
@@ -101,5 +105,19 @@ class SeedDemoTest extends TestCase
         }
         $this->assertNotEmpty($course->pendingTasksFor($student('alumno04')));
         $this->assertTrue(Submission::where('status', 'graded')->get()->contains(fn ($s) => $s->needsReinforcement()));
+    }
+
+    public function test_prints_and_saves_the_accounts_table_without_passwords(): void
+    {
+        $this->artisan('app:seed-demo')->assertSuccessful()->expectsOutputToContain('DEMO_PASSWORD');
+        $this->artisan('app:seed-demo')->assertSuccessful();
+
+        $text = file_get_contents($this->accounts);
+        $this->assertStringStartsWith('php artisan serve', $text);
+        $this->assertSame(1, substr_count($text, '## Cuentas de la demo'));
+        $this->assertStringNotContainsString('clave-demo-segura', $text);
+        $this->assertStringContainsString('profe+gg-alumno05@ejemplo.mx | alumno | Estadística descriptiva para ciencias sociales | Jorge Pineda. En cero', $text);
+        $this->assertStringContainsString('lo último fue DEVUELTO', $text);
+        $this->assertStringContainsString('app:create-super-admin', $text);
     }
 }

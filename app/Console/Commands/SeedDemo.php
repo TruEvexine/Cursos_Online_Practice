@@ -84,9 +84,53 @@ class SeedDemo extends Command
             }
         });
 
-        $this->info('Listo. Usuarios demo: '.$this->email('director', $demo['email_base']).' y similares (+gg-ponente1…3, +gg-alumno01…12).');
+        $this->accounts($demo);
 
         return self::SUCCESS;
+    }
+
+    /** Imprime la tabla de cuentas y la guarda en RUN.txt (git-ignorado). Nunca escribe contraseñas. */
+    private function accounts(array $demo): void
+    {
+        $courses = collect(require database_path('demo/courses.php'))->keyBy('slug');
+        $topics = fn ($slug) => collect($courses[$slug]['blocks'])->sum(fn ($b) => count($b['topics']));
+        $rows = [['Super admin', 'super_admin', '—', 'Tu propio usuario: no se siembra. Se crea con php artisan app:create-super-admin.']];
+
+        foreach (self::STAFF as $tag => [$role, $name]) {
+            $teaches = $courses->where('ponente', $tag)->pluck('title')->implode(', ');
+            $rows[] = [$this->email($tag, $demo['email_base']), $role, $teaches ?: 'todos (solo lectura)', $name];
+        }
+        foreach (self::STUDENTS as $tag => $name) {
+            foreach (self::PROGRESS as $slug => $students) {
+                if (! isset($students[$tag])) {
+                    continue;
+                }
+                [$level, $ungraded, $returned] = $students[$tag];
+                $total = $topics($slug);
+                $state = match (true) {
+                    $level === 0 => 'En cero: no ha empezado.',
+                    $returned => "$level de $total temas; lo último fue DEVUELTO para corregir.",
+                    $ungraded => "$level de $total temas; lo último está entregado SIN CALIFICAR.",
+                    $level >= $total => 'Curso completo: todo calificado (avanzado).',
+                    default => "$level de $total temas, todo calificado; sigue la tarea pendiente del siguiente tema.",
+                };
+                $rows[] = [$this->email($tag, $demo['email_base']), 'alumno', $courses[$slug]['title'], "$name. $state"];
+            }
+        }
+
+        $headers = ['Correo', 'Rol', 'Curso', 'Nombre y estado'];
+        $this->table($headers, $rows);
+        $this->line('Contraseña de todas las cuentas demo: el valor de DEMO_PASSWORD en .env.');
+
+        $section = "## Cuentas de la demo (php artisan app:seed-demo, ".now('America/Mexico_City')->format('Y-m-d H:i').")\n"
+            ."# Contraseña de todas: el valor de DEMO_PASSWORD en .env (no se escribe aquí).\n"
+            .collect($rows)->map(fn ($r) => implode(' | ', $r))->implode("\n")
+            ."\n## Fin de cuentas de la demo\n";
+        $file = $demo['accounts_file'];
+        $current = is_file($file) ? file_get_contents($file) : '';
+        $current = preg_replace('/\n?## Cuentas de la demo.*?## Fin de cuentas de la demo\n/s', '', $current);
+        file_put_contents($file, rtrim($current)."\n\n".$section);
+        $this->info("Tabla guardada en $file.");
     }
 
     private function email(string $tag, string $base): string

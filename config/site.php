@@ -15,6 +15,7 @@ return [
         'enabled' => (bool) env('DEMO_MODE', false),
         'password' => env('DEMO_PASSWORD'),
         'email_base' => env('DEMO_EMAIL_BASE'), // p. ej. tu@gmail.com → tu+gg-alumno01@gmail.com
+        'accounts_file' => base_path('RUN.txt'), // git-ignorado: la tabla de cuentas se guarda aquí (sin contraseñas)
     ],
 
     // Calificaciones: debajo de este porcentaje la nota se marca "por reforzar".
