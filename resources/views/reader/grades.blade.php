@@ -1,5 +1,5 @@
 <x-reader-layout :course="$course" title="Mis calificaciones" :crumbs="[$course->title => route('reader.course', $course), 'Calificaciones' => null]">
-    <h1 class="font-serif text-3xl font-semibold">Mis calificaciones</h1>
+    <h1 class="font-serif text-4xl font-semibold">Mis calificaciones</h1>
     <p class="mt-1 text-muted">{{ $course->title }}</p>
 
     <section aria-labelledby="promedio" class="mt-6 max-w-3xl rounded-card bg-primary-soft p-6">

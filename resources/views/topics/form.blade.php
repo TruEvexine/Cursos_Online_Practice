@@ -7,7 +7,7 @@
 <x-layouts.app :title="$heading.' — Gaining Grades'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), $course->title => route('blocks.index', $course), $heading => null]">
     <p class="text-muted">Bloque {{ $block->position }}: {{ $block->title }}</p>
-    <h1 class="mb-6 font-serif text-3xl font-semibold">{{ $heading }}</h1>
+    <h1 class="mb-6 font-serif text-4xl font-semibold">{{ $heading }}</h1>
 
     <form method="POST" action="{{ $editing ? route('topics.update', $topic) : route('topics.store', $block) }}"
           class="max-w-3xl space-y-6 rounded-card border border-line bg-surface p-6" novalidate>

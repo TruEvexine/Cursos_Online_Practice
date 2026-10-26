@@ -1,6 +1,6 @@
 <x-reader-layout :course="$course" :title="$topic->title" :crumbs="[$course->title => route('reader.course', $course), $topic->title => null]">
     <p class="text-muted">{{ $topic->block->title }}</p>
-    <h1 class="font-serif text-3xl font-semibold [overflow-wrap:anywhere]">
+    <h1 class="font-serif text-4xl font-semibold [overflow-wrap:anywhere]">
         {{ $topic->title }}
         @unless ($topic->is_required)
             <span class="ml-1 inline-block whitespace-nowrap rounded-full bg-sunken px-2 align-middle font-sans text-sm font-normal text-muted">Opcional</span>

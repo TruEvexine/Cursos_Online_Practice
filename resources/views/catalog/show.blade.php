@@ -3,7 +3,8 @@
     <article class="mx-auto grid max-w-[1120px] gap-10 px-4 py-16 lg:grid-cols-[2fr_1fr]">
         <div>
             <a href="{{ route('catalog.index') }}" class="inline-flex min-h-11 items-center text-primary underline">← Catálogo</a>
-            <h1 class="mt-2 font-serif text-5xl font-semibold [overflow-wrap:anywhere]">{{ $course->title }}</h1>
+            <x-course-cover :course="$course" class="mt-4 aspect-[16/6] rounded-card" />
+            <h1 class="mt-6 font-serif text-5xl font-semibold [overflow-wrap:anywhere]">{{ $course->title }}</h1>
             <p class="mt-3 text-lg text-muted">Imparte {{ $course->ponente->name }}
                 @if ($course->starts_on) · {{ $course->ends_on ? 'del '.$course->starts_on->isoFormat('D MMM').' al '.$course->ends_on->isoFormat('D MMM YYYY') : 'inicia el '.$course->starts_on->isoFormat('D MMM YYYY') }}@endif
             </p>

@@ -11,7 +11,7 @@
 <x-layouts.app :title="$heading.' — Gaining Grades'">
     <p class="mb-2 text-muted">Hola, {{ auth()->user()->name }}</p>
 
-    <h1 class="font-serif text-3xl font-semibold">
+    <h1 class="font-serif text-4xl font-semibold">
         Has iniciado sesión como
         <span class="whitespace-nowrap rounded-full bg-primary-soft px-3 py-0.5 text-primary">{{ auth()->user()->role->name }}</span>
     </h1>

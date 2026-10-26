@@ -11,7 +11,9 @@
         @else
             <ul class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($courses as $course)
-                    <li class="flex flex-col rounded-card bg-surface p-6">
+                    <li class="flex flex-col overflow-hidden rounded-card border border-line bg-surface transition-colors duration-150 hover:border-line-strong">
+                        <x-course-cover :course="$course" class="aspect-[16/7]" />
+                        <div class="flex flex-1 flex-col p-6">
                         <x-course-price :course="$course" class="self-start rounded-full bg-primary-soft px-3 py-0.5 text-sm font-semibold text-primary" />
                         <h2 class="mt-3 font-serif text-2xl font-semibold [overflow-wrap:anywhere]">{{ $course->title }}</h2>
                         <p class="mt-1 text-muted">Imparte {{ $course->ponente->name }}</p>
@@ -22,6 +24,7 @@
                             · actualizado el {{ $course->updated_at->timezone('America/Mexico_City')->isoFormat('D MMM YYYY') }}
                         </p>
                         <a href="{{ route('catalog.show', $course) }}" class="mt-auto inline-flex min-h-11 items-center self-start pt-4 font-semibold text-primary underline">Ver el curso<span class="sr-only"> «{{ $course->title }}»</span></a>
+                        </div>
                     </li>
                 @endforeach
             </ul>

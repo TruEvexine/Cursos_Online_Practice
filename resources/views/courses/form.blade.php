@@ -6,10 +6,10 @@
 <x-layouts.app :title="$heading.' — Gaining Grades'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), ($editing ? $course->title : 'Nuevo curso') => null]">
     @if ($editing)
-        <h1 class="mb-4 font-serif text-3xl font-semibold">{{ $course->title }}</h1>
+        <h1 class="mb-4 font-serif text-4xl font-semibold">{{ $course->title }}</h1>
         <x-course-tabs :course="$course" current="details" />
     @else
-        <h1 class="mb-6 font-serif text-3xl font-semibold">{{ $heading }}</h1>
+        <h1 class="mb-6 font-serif text-4xl font-semibold">{{ $heading }}</h1>
     @endif
 
     <form method="POST" action="{{ $editing ? route('courses.update', $course) : route('courses.store') }}"

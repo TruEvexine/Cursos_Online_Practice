@@ -1,7 +1,7 @@
 @php $limited = $user->hasRole('alumno'); @endphp
 
 <x-layouts.app title="Mi perfil — Gaining Grades" :breadcrumbs="['Inicio' => route('dashboard'), 'Mi perfil' => null]">
-    <h1 class="mb-6 font-serif text-3xl font-semibold">Mi perfil</h1>
+    <h1 class="mb-6 font-serif text-4xl font-semibold">Mi perfil</h1>
 
     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data"
           class="max-w-2xl space-y-6 rounded-card border border-line bg-surface p-6" novalidate>

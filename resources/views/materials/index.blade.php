@@ -5,7 +5,7 @@
 
 <x-layouts.app :title="'Materiales: '.$course->title.' — Gaining Grades'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), $course->title => route('blocks.index', $course), 'Materiales' => null]">
-    <h1 class="mb-4 font-serif text-3xl font-semibold">{{ $course->title }}</h1>
+    <h1 class="mb-4 font-serif text-4xl font-semibold">{{ $course->title }}</h1>
     <x-course-tabs :course="$course" current="materials" />
 
     @if ($course->materials->isEmpty())

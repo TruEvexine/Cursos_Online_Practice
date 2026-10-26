@@ -3,7 +3,7 @@
 <x-layouts.app :title="'Calificar: '.$task->title.' — Gaining Grades'"
                :breadcrumbs="['Inicio' => route('dashboard'), 'Cursos' => route('courses.index'), $course->title => route('blocks.index', $course), 'Entregas' => route('grading.index', $course), $submission->user->name => null]">
     <p class="text-muted">{{ $task->topic->title }}</p>
-    <h1 class="font-serif text-3xl font-semibold [overflow-wrap:anywhere]">{{ $task->title }}</h1>
+    <h1 class="font-serif text-4xl font-semibold [overflow-wrap:anywhere]">{{ $task->title }}</h1>
     <p class="mt-1 text-muted">
         Entrega de <strong class="text-ink">{{ $submission->user->name }}</strong>
         · {{ $submission->submitted_at->timezone('America/Mexico_City')->isoFormat('D MMM YYYY, H:mm') }}
