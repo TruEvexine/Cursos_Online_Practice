@@ -1,4 +1,4 @@
-# Fase 4 — Exámenes (BORRADOR con decisiones del 2026-10-24; pendiente de visto bueno)
+# Fase 4 — Exámenes (BORRADOR con decisiones del 2026-10-26; va después del hito DEMO)
 
 Rama `feature/fase-4-examenes` (sale de la Fase 3 cerrada). Tablas que ya existen: `exams`, `exam_questions`, `exam_options`, `exam_attempts`, `exam_answers`, `exam_answer_options`.
 Comodín de intento extra: depende de `reward_grants` (Fase 3, tarea 7).
@@ -68,8 +68,9 @@ Banco de preguntas aleatorio, orden aleatorio de preguntas u opciones, supervisi
 1. **"Ayuda en el examen":** es el comodín de **un intento extra**, y solo se puede usar **con el examen abierto** (dentro de `available_from` / `available_until`).
 2. **Se acaba el tiempo:** se **envía lo respondido**. El intento se cierra con lo guardado y se califica (automático y, si hay abiertas, queda pendiente del ponente).
 3. **Cronómetro:** módulo JS propio en `resources/js` (sin paquetes nuevos, sin JS en línea). **El servidor valida el tiempo**: `started_at` + límite + 30 s de gracia.
-4. **Mejor intento calificado:** se mantiene la regla del PLAN §5, también para el intento extra. *(Lo asumo; avísame si el intento extra debe reemplazar la nota.)*
-5. **Calificación mínima (`passing_score`):** solo se muestra "aprobado / no aprobado"; no bloquea nada. *(Propuesta mía; confírmala.)*
+4. **Mejor intento calificado:** se mantiene la regla del PLAN §5, también para el intento extra (confirmado el 2026-10-26).
+5. **Calificación mínima (`passing_score`):** solo se muestra "aprobado / no aprobado"; no bloquea nada (confirmado el 2026-10-26).
+6. **Benchmark P2:** cada respuesta se guarda al contestarla y el servidor envía lo guardado al acabarse el tiempo, aunque el navegador no mande nada; hay prueba con JS apagado.
 
 ## Esquema
 

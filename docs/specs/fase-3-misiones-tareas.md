@@ -1,4 +1,16 @@
-# Fase 3 — Misiones, tareas y calificaciones (BORRADOR con decisiones del 2026-10-24; pendiente de visto bueno)
+# Fase 3 — Misiones, tareas y calificaciones (implementada en el hito DEMO, 2026-10-26; comodines pendientes)
+
+**Estado:** tareas 1 a 6 hechas en `feature/fase-3-misiones`; la tarea 7 (comodines) va después de la DEMO, cuando se aplique `001_comodines.sql`.
+
+Cómo quedó:
+- `App\Support\CourseProgress` calcula el desbloqueo.
+- "Marcar como visto" escribe `topic_progress` solo para un alumno activo.
+- La fecha límite se escribe en hora de Ciudad de México y se guarda en UTC.
+- `submitted_at` es la primera entrega.
+- "Por reforzar" toma el umbral de `config/site.php`.
+- Calificar y devolver quedan en `audit_logs`.
+- Del benchmark entraron "próxima entrega" y los pendientes por curso.
+- **Fuera por ahora:** aviso de entrega tarde por correo y comentarios reutilizables (benchmark P3).
 
 Rama `feature/fase-3-misiones` (sale de `feature/fase-2-cursos` una vez aprobada). Tablas que ya existen: `tasks`, `submissions`, `topic_progress`, vista `v_gradebook`.
 Comodines: necesitan `database/changes/001_comodines.sql` aplicado a mano antes de la tarea 7.
@@ -70,6 +82,21 @@ Exámenes (Fase 4), avisos y chat (Fase 5), tablero del director (Fase 6), entre
   - revocar y usar quedan en la bitácora.
 - Aceptación: el alumno entrega, el ponente califica, el siguiente bloque se abre y la nota aparece en la vista del alumno.
 
+## Hito DEMO (además de la fase)
+
+- **Registro abierto mínimo** (Fortify, `SITE_OPEN_REGISTRATION`):
+  - solo alumnos de 18 años o más;
+  - la fecha de nacimiento se valida y no se guarda;
+  - los términos aceptados quedan en `audit_logs` con su versión.
+- **Catálogo público** (`/catalogo`, `courses.catalog_price` en `002_catalogo.sql`):
+  - el curso puede ser gratis o de pago **simulado**, rotulado "modo prueba";
+  - el pago simulado solo crea la inscripción y la anota en `audit_logs`.
+- **`php artisan app:seed-demo`:**
+  - solo con `DEMO_MODE=true`;
+  - toma `DEMO_PASSWORD` y `DEMO_EMAIL_BASE` del entorno;
+  - es idempotente;
+  - nunca toca al super admin.
+
 ## Tareas (un commit cada una; auditoría de diseño en las de interfaz)
 
 1. Servicio de desbloqueo con pruebas, más "marcar como visto".
@@ -87,7 +114,7 @@ Exámenes (Fase 4), avisos y chat (Fase 5), tablero del director (Fase 6), entre
    La consulta del promedio (`v_gradebook` o su equivalente en Eloquent) debe saltar las tareas con un comodín `skip_task` usado.
 2. **Topes:** los define el ponente por curso. Por defecto, **3 comodines disponibles** a la vez por alumno y **5 concedidos** en total por alumno en el curso
    (`courses.reward_max_available` y `courses.reward_max_granted` en `001_comodines.sql`).
-   *Interpretación mía de "5 concedidos por curso": por alumno; si era el total del curso entre todos los alumnos, dímelo.*
+   *Confirmado el 2026-10-26: 5 concedidos por alumno en ese curso.*
 3. **Puntos extra:**
    - se aplican a una tarea **ya calificada** que elige el alumno;
    - suman hasta el **10 % del máximo** de esa tarea, sin pasar del máximo;

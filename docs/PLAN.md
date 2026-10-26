@@ -96,22 +96,22 @@ Cada fase termina con la app funcionando, sin código a medias. Al inicio de cad
 ### Hito DEMO (después de la Fase 3, antes de la Fase 4)
 
 Prueba para mostrar al profesor; no es producción. Entra:
-- [ ] Fase 3 sin comodines (los comodines esperan a que se aplique `001_comodines.sql`; van después de la DEMO).
-- [ ] Del benchmark (`docs/research/benchmark.md`), P1:
+- [x] Fase 3 sin comodines (los comodines esperan a que se aplique `001_comodines.sql`; van después de la DEMO).
+- [x] Del benchmark (`docs/research/benchmark.md`), P1:
   - "próxima entrega" y pendientes por curso;
   - retroalimentación junto a la nota;
   - estado de cada entrega visible y "tarde" en la bandeja.
-- [ ] Registro abierto mínimo (subconjunto de 8b): nombre, correo, fecha de nacimiento (menores de 18 bloqueados) y aceptación de términos.
-- [ ] Catálogo público y pago simulado (subconjunto de 8c): rotulado "modo prueba"; crea la inscripción.
-- [ ] `php artisan app:seed-demo`: idempotente, solo con `DEMO_MODE=true`; nunca toca al super admin real.
+- [x] Registro abierto mínimo (subconjunto de 8b): nombre, correo, fecha de nacimiento (menores de 18 bloqueados) y aceptación de términos.
+- [x] Catálogo público y pago simulado (subconjunto de 8c): rotulado "modo prueba"; crea la inscripción. *Requiere aplicar `database/changes/002_catalogo.sql`.*
+- [x] `php artisan app:seed-demo`: idempotente, solo con `DEMO_MODE=true`; nunca toca al super admin real.
 - Siguen fuera: Fase 4 en adelante, comodines y pagos reales.
 
 ### Fase 3 — Misiones, tareas y calificaciones
-- [ ] Reglas de desbloqueo (sección 4) con pruebas, mapa de misiones.
-- [ ] Tareas y entregas (texto y/o archivo), edición de la entrega hasta que se califica.
-- [ ] Ponente: bandeja de pendientes, calificar con retroalimentación, devolver.
-- [ ] Alumno: calificaciones en solo lectura + promedio ponderado.
-- [ ] Al final de la fase: recompensas opcionales ("comodines") para tareas (sección 9).
+- [x] Reglas de desbloqueo (sección 4) con pruebas, mapa de misiones.
+- [x] Tareas y entregas (texto y/o archivo), edición de la entrega hasta que se califica.
+- [x] Ponente: bandeja de pendientes, calificar con retroalimentación, devolver.
+- [x] Alumno: calificaciones en solo lectura + promedio ponderado.
+- [ ] Al final de la fase: recompensas opcionales ("comodines") para tareas (sección 9). *Después de la DEMO: requiere aplicar `001_comodines.sql`.*
 - **Hecho cuando:** un alumno entrega, el ponente califica, el siguiente bloque se abre y la nota aparece en su vista.
 
 ### Fase 3b — Pasada de diseño (después de la Fase 3)
