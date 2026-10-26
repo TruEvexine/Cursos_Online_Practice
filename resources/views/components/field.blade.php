@@ -1,8 +1,11 @@
-@props(['name', 'label', 'type' => 'text', 'value' => null, 'help' => null, 'options' => []])
+@props(['name', 'label', 'type' => 'text', 'value' => null, 'help' => null, 'options' => [], 'mine' => true])
 
 @php
     $id = $attributes->get('id', $name);
-    $error = $errors->first($name);
+    // 'mine' = false: otro formulario de la misma página con el mismo campo (p. ej. una entrega por tarea) fue el que se envió;
+    // este no muestra su error ni lo que se escribió allá.
+    $error = $mine ? $errors->first($name) : null;
+    $current = $mine ? old($name, $value) : $value;
     $describedBy = trim(($help ? "$id-help " : '').($error ? "$id-error" : ''));
     // Foco al primer campo con error tras un envío fallido (docs/DESIGN.md §8), sin JavaScript.
     $focus = $error && array_key_first($errors->getMessages()) === $name;
@@ -16,17 +19,17 @@
 
     @if ($type === 'textarea')
         <textarea id="{{ $id }}" name="{{ $name }}" @if ($describedBy) aria-describedby="{{ $describedBy }}" @endif @if ($error) aria-invalid="true" @endif @if ($focus) autofocus @endif
-                  {{ $attributes->merge(['class' => 'w-full rounded-field border border-line-strong bg-surface px-3 py-2', 'rows' => 4]) }}>{{ old($name, $value) }}</textarea>
+                  {{ $attributes->merge(['class' => 'w-full rounded-field border border-line-strong bg-surface px-3 py-2', 'rows' => 4]) }}>{{ $current }}</textarea>
     @elseif ($type === 'select')
         <select id="{{ $id }}" name="{{ $name }}" @if ($describedBy) aria-describedby="{{ $describedBy }}" @endif @if ($error) aria-invalid="true" @endif @if ($focus) autofocus @endif
                 {{ $attributes->merge(['class' => 'min-h-11 w-full rounded-field border border-line-strong bg-surface px-3']) }}>
             {{ $slot }}
             @foreach ($options as $optionValue => $optionLabel)
-                <option value="{{ $optionValue }}" @selected((string) old($name, $value) === (string) $optionValue)>{{ $optionLabel }}</option>
+                <option value="{{ $optionValue }}" @selected((string) $current === (string) $optionValue)>{{ $optionLabel }}</option>
             @endforeach
         </select>
     @else
-        <input id="{{ $id }}" name="{{ $name }}" type="{{ $type }}" @if ($type !== 'password' && $type !== 'file') value="{{ old($name, $value) }}" @endif
+        <input id="{{ $id }}" name="{{ $name }}" type="{{ $type }}" @if ($type !== 'password' && $type !== 'file') value="{{ $current }}" @endif
                @if ($describedBy) aria-describedby="{{ $describedBy }}" @endif @if ($error) aria-invalid="true" @endif @if ($focus) autofocus @endif
                {{ $attributes->merge(['class' => 'min-h-11 w-full rounded-field border border-line-strong bg-surface px-3']) }}>
     @endif

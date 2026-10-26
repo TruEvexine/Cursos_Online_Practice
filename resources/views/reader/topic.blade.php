@@ -58,8 +58,10 @@
                     @if ($canSubmit)
                         <form method="POST" action="{{ route('submissions.store', $task) }}" enctype="multipart/form-data" class="mt-4 space-y-4" novalidate>
                             @csrf
-                            <x-field name="body" :id="'body-'.$task->id" label="{{ $submission ? 'Editar tu respuesta' : 'Tu respuesta' }}" type="textarea" rows="5" maxlength="20000" :value="$submission?->body" />
-                            <x-field name="file" :id="'file-'.$task->id" label="Archivo (opcional)" type="file" accept=".pdf,.docx,.pptx,.xlsx,.png,.jpg,.jpeg,.webp" class="py-2"
+                            <input type="hidden" name="task_id" value="{{ $task->id }}">
+                            @php $mine = ! old('task_id') || (int) old('task_id') === $task->id; @endphp
+                            <x-field name="body" :mine="$mine" :id="'body-'.$task->id" label="{{ $submission ? 'Editar tu respuesta' : 'Tu respuesta' }}" type="textarea" rows="5" maxlength="20000" :value="$submission?->body" />
+                            <x-field name="file" :mine="$mine" :id="'file-'.$task->id" label="Archivo (opcional)" type="file" accept=".pdf,.docx,.pptx,.xlsx,.png,.jpg,.jpeg,.webp" class="py-2"
                                      help="PDF, Word, PowerPoint, Excel o imagen. Máximo {{ App\Models\Material::maxUploadMb() }} MB.{{ $submission?->file_path ? ' Si subes otro, reemplaza al anterior.' : '' }}" />
                             <button type="submit" class="min-h-11 rounded-field bg-primary px-6 font-semibold text-canvas transition-colors duration-150 hover:bg-primary-hover">{{ $submission ? 'Guardar cambios' : 'Entregar' }}</button>
                         </form>

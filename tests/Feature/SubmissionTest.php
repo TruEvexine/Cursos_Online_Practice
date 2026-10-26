@@ -8,7 +8,10 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
+use App\Http\Controllers\ReaderController;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\ViewErrorBag;
 use Tests\TestCase;
 
 class SubmissionTest extends TestCase
@@ -117,5 +120,24 @@ class SubmissionTest extends TestCase
     {
         $this->actingAs($this->course->ponente)->get("/temas/{$this->task->topic_id}")->assertOk()
             ->assertSee('Ensayo')->assertDontSee('action="'.route('submissions.store', $this->task).'"', false);
+    }
+
+    public function test_an_error_shows_only_under_the_task_that_was_submitted(): void
+    {
+        $other = $this->task->topic->tasks()->create(['title' => 'Otra tarea', 'max_score' => 10]);
+        $this->submit(['body' => '', 'task_id' => $this->task->id])->assertSessionHasErrors('body');
+
+        // Lo que deja el redirect con errores: el error y lo escrito, con la tarea que se envió.
+        // (Se renderiza la vista directo: en pruebas, el middleware vuelve a compartir los errores de la sesión en memoria.)
+        $this->actingAs($this->student);
+        session()->put('_old_input', ['task_id' => (string) $this->task->id, 'body' => 'borrador a medias']);
+        request()->setLaravelSession(session()->driver());
+        view()->share('errors', (new ViewErrorBag)->put('default', new MessageBag(['body' => ['Escribe tu respuesta o adjunta un archivo.']])));
+        $html = app(ReaderController::class)->topic($this->task->topic)->render();
+
+        $this->assertSame(1, substr_count($html, 'Escribe tu respuesta o adjunta un archivo.'));
+        $this->assertStringContainsString('id="body-'.$this->task->id.'-error"', $html);
+        $this->assertStringNotContainsString('id="body-'.$other->id.'-error"', $html);
+        $this->assertSame(1, substr_count($html, 'borrador a medias'));
     }
 }
