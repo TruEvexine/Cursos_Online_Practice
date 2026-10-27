@@ -40,7 +40,11 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
+            // R2 rechaza los checksums que el SDK nuevo manda por defecto; y con throw=false el fallo pasaba en silencio
+            // (la entrega decía "guardada" sin archivo). Ahora un fallo de R2 se ve como error, no como éxito falso.
+            'request_checksum_calculation' => 'when_required',
+            'response_checksum_validation' => 'when_required',
+            'throw' => true,
             'report' => false,
         ] : [
             'driver' => 'local',

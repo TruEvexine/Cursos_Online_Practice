@@ -30,9 +30,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Cada rol tiene su propio inicio; /dashboard (destino tras el login) manda al que le toca.
     Route::get('/dashboard', fn () => redirect()->route(auth()->user()->role->slug.'.home'))->name('dashboard');
 
-    $home = fn (string $area) => fn () => view('home', ['area' => $area]);
-    Route::get('/admin', $home('super_admin'))->middleware('role:super_admin')->name('super_admin.home');
-    Route::get('/direccion', $home('director'))->middleware('role:director,super_admin')->name('director.home');
+    // Route::view (no closures anidadas): `route:cache` en producción no las rehidrata bien y daba error 500.
+    Route::view('/admin', 'home', ['area' => 'super_admin'])->middleware('role:super_admin')->name('super_admin.home');
+    Route::view('/direccion', 'home', ['area' => 'director'])->middleware('role:director,super_admin')->name('director.home');
     Route::get('/ponente', PonenteHomeController::class)->middleware('role:ponente')->name('ponente.home');
     Route::get('/alumno', [ReaderController::class, 'myCourses'])->middleware('role:alumno')->name('alumno.home');
 
