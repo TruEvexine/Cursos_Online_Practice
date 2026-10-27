@@ -57,10 +57,11 @@ Copia el resultado (empieza con `base64:`). Va a Render como `APP_KEY`.
 4. Carga el esquema desde la carpeta del proyecto. Pedirá la clave de `avnadmin`:
    ```bash
    cd ~/IdeaProjects/Cursos_Online_Practice
-   mysql --ssl-ca=$HOME/aiven-ca.pem -h <host> -P <puerto> -u avnadmin -p defaultdb < database/schema.sql
-   mysql --ssl-ca=$HOME/aiven-ca.pem -h <host> -P <puerto> -u avnadmin -p defaultdb < database/changes/002_catalogo.sql
+   mysql --ssl-ca=$HOME/aiven-ca.pem -h HOST -P PUERTO -u avnadmin -p defaultdb < database/schema.sql
    ```
-   Antes, revisa si `schema.sql` ya incluye el cambio 001: `grep -n -i comodin database/schema.sql`. Si no aparece, carga también `database/changes/001_comodines.sql`. **(sin comprobar)**
+   Sustituye `HOST` y `PUERTO` por los valores reales, **sin** los signos `< >` (bash los interpreta como redirecciones y da `syntax error`).
+
+   `schema.sql` ya incluye todo lo de `changes/002_catalogo.sql`. **No cargues 002**: al hacerlo, da `Duplicate check constraint`. **No cargues 001_comodines.sql**: es una propuesta que aún no está aprobada.
 5. Crea el usuario de la app. Elige tú una clave larga y aleatoria, y ejecuta en la consola SQL de Aiven o con `mysql`:
    ```sql
    CREATE USER 'cursos_app'@'%' IDENTIFIED BY '<clave-larga>';
@@ -174,7 +175,7 @@ Te pedirá correo y clave; no quedan en ningún archivo.
 
 - **Base:** antes de cada cambio de esquema, guarda un volcado fuera del repo:
   ```bash
-  mysqldump --ssl-ca=$HOME/aiven-ca.pem -h <host> -P <puerto> -u avnadmin -p --single-transaction --no-tablespaces defaultdb > ~/respaldos/gg-$(date +%F).sql
+  mysqldump --ssl-ca=$HOME/aiven-ca.pem -h HOST -P PUERTO -u avnadmin -p --single-transaction --no-tablespaces defaultdb > ~/respaldos/gg-$(date +%F).sql
   ```
 - **Archivos:** viven en R2, que no hace respaldo propio. Para una copia, `rclone sync` hacia tu máquina.
 

@@ -44,11 +44,14 @@
                     @endforeach
                 </ul>
             </nav>
-            @auth
-                <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 items-center whitespace-nowrap rounded-field bg-primary px-5 font-semibold text-canvas transition-colors duration-150 hover:bg-primary-hover">Ir a mi panel</a>
-            @else
-                <a href="{{ route('login') }}" class="inline-flex min-h-11 items-center whitespace-nowrap rounded-field bg-primary px-5 font-semibold text-canvas transition-colors duration-150 hover:bg-primary-hover">Iniciar sesión</a>
-            @endauth
+            <div class="flex items-center gap-3">
+                <button type="button" data-theme-toggle class="inline-flex min-h-11 items-center whitespace-nowrap rounded-field border border-line-strong px-4 hover:bg-sunken">Modo oscuro</button>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="inline-flex min-h-11 items-center whitespace-nowrap rounded-field bg-primary px-5 font-semibold text-canvas transition-colors duration-150 hover:bg-primary-hover">Ir a mi panel</a>
+                @else
+                    <a href="{{ route('login') }}" class="inline-flex min-h-11 items-center whitespace-nowrap rounded-field bg-primary px-5 font-semibold text-canvas transition-colors duration-150 hover:bg-primary-hover">Iniciar sesión</a>
+                @endauth
+            </div>
         </div>
     </header>
 

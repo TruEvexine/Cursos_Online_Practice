@@ -35,6 +35,19 @@
     }
 }
 
+/* Elección explícita del botón del encabezado (gana sobre el sistema). */
+:root[data-theme="dark"] {
+    --canvas: #0D1322;   --surface: #141C30;   --surface-sunken: #10172A;
+    --border: #22304A;   --border-strong: #6B7A99;
+    --ink: #E6EAF2;      --ink-muted: #9AA7BD;
+    --primary: #7FA8FF;  --primary-hover: #A3C0FF;  --primary-soft: #1B2A4D;
+    --accent: #FBBF24;   --accent-ink: #FBBF24;
+    --success: #4ADE80;  --danger: #F87171;  --focus: #7FA8FF;
+    --success-soft: #12301F;  --success-ink: #4ADE80;
+    --warning-soft: #33240C;  --warning-ink: #FBBF24;
+    --danger-soft: #3A1518;
+}
+
 @theme inline {
     --color-canvas: var(--canvas);
     --color-surface: var(--surface);

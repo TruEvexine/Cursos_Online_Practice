@@ -36,6 +36,7 @@
                     <span class="hidden text-muted sm:inline">{{ $user->name }}</span>
                     {{-- En móvil no cabe junto al botón; el rol también se ve en la página de inicio. --}}
                     <span class="hidden whitespace-nowrap rounded-full bg-primary-soft px-3 py-0.5 text-sm font-semibold text-primary sm:inline-block">{{ $user->role->name }}</span>
+                    <button type="button" data-theme-toggle class="min-h-11 whitespace-nowrap rounded-field border border-line-strong px-4 hover:bg-sunken">Modo oscuro</button>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="min-h-11 whitespace-nowrap rounded-field border border-line-strong px-4 hover:bg-sunken">Cerrar sesión</button>
